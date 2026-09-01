@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1200" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2c3e50"/>
+    </marker>
+    <style>
+      .startend { fill: #2c3e50; stroke: #1a252f; stroke-width: 2; rx: 25; ry: 25; }
+      .process { fill: #3498db; stroke: #2980b9; stroke-width: 2; rx: 8; }
+      .decision { fill: #f39c12; stroke: #e67e22; stroke-width: 2; rx: 5; }
+      .subprocess { fill: #2ecc71; stroke: #27ae60; stroke-width: 2; rx: 8; }
+      .text { fill: white; font-size: 14px; font-weight: bold; text-anchor: middle; }
+      .textsmall { fill: white; font-size: 11px; text-anchor: middle; }
+      .textdark { fill: #2c3e50; font-size: 12px; font-weight: bold; text-anchor: middle; }
+      .line { stroke: #2c3e50; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <!-- خلفية -->
+  <rect width="1000" height="1200" fill="#f8f9fa" stroke="#2c3e50" stroke-width="2" rx="12"/>
+
+  <!-- العنوان -->
+  <text x="500" y="40" text-anchor="middle" font-size="24" font-weight="bold" fill="#2c3e50">Software Flowchart – ESP32 Egg Incubator</text>
+  <text x="500" y="60" text-anchor="middle" font-size="13" fill="#7f8c8d">Main Execution Flow (Memory10_2.ino)</text>
+  <line x1="50" y1="75" x2="950" y2="75" stroke="#bdc3c7" stroke-width="1.5"/>
+
+  <!-- ========== setup() ========== -->
+  <rect x="350" y="95" width="300" height="50" class="startend"/>
+  <text x="500" y="125" class="text">START</text>
+  <line x1="500" y1="145" x2="500" y2="170" class="line"/>
+
+  <rect x="300" y="170" width="400" height="60" class="process"/>
+  <text x="500" y="195" class="text">setup() – Initialization</text>
+  <text x="500" y="215" class="textsmall">Serial, Wire, WDT, GPIO, Sensors, LCD, NVS</text>
+  <line x1="500" y1="230" x2="500" y2="260" class="line"/>
+
+  <rect x="330" y="260" width="340" height="50" class="subprocess"/>
+  <text x="500" y="280" class="text">diag_init()</text>
+  <text x="500" y="298" class="textsmall">Load diagnostics from NVS (Dual‑blob)</text>
+  <line x1="500" y1="310" x2="500" y2="340" class="line"/>
+
+  <rect x="330" y="340" width="340" height="50" class="subprocess"/>
+  <text x="500" y="360" class="text">diag_io_init()</text>
+  <text x="500" y="378" class="textsmall">WiFi connect, Telegram, Predictive, Cycle Archive</text>
+  <line x1="500" y1="390" x2="500" y2="420" class="line"/>
+
+  <rect x="330" y="420" width="340" height="50" class="subprocess"/>
+  <text x="500" y="440" class="text">email_reporter_init()</text>
+  <text x="500" y="458" class="textsmall">Prepare crash email (disabled by default)</text>
+  <line x1="500" y1="470" x2="500" y2="500" class="line"/>
+
+  <rect x="350" y="500" width="300" height="50" class="process"/>
+  <text x="500" y="530" class="text">System Ready ✅</text>
+  <line x1="500" y1="550" x2="500" y2="580" class="line"/>
+
+  <!-- ========== loop() ========== -->
+  <rect x="350" y="580" width="300" height="50" class="startend"/>
+  <text x="500" y="610" class="text">loop() – Main Cycle</text>
+  <line x1="500" y1="630" x2="500" y2="660" class="line"/>
+
+  <!-- Fan -->
+  <rect x="330" y="660" width="340" height="45" class="subprocess"/>
+  <text x="500" y="688" class="text">Fan Always ON (setActuator(0, true))</text>
+  <line x1="500" y1="705" x2="500" y2="735" class="line"/>
+
+  <!-- Turner -->
+  <rect x="330" y="735" width="340" height="60" class="subprocess"/>
+  <text x="500" y="758" class="text">Turner Control</text>
+  <text x="500" y="778" class="textsmall">60s OFF / 15s ON (frozen if predictive active)</text>
+  <line x1="500" y1="795" x2="500" y2="825" class="line"/>
+
+  <!-- Timer -->
+  <rect x="330" y="825" width="340" height="45" class="subprocess"/>
+  <text x="500" y="853" class="text">updateTimer() – Countdown</text>
+  <line x1="500" y1="870" x2="500" y2="900" class="line"/>
+
+  <!-- Serial Commands -->
+  <rect x="330" y="900" width="340" height="45" class="process"/>
+  <text x="500" y="928" class="text">handleSerialCommands()</text>
+  <line x1="500" y1="945" x2="500" y2="975" class="line"/>
+
+  <!-- ========== Every 2s ========== -->
+  <polygon points="500,975 620,1000 500,1025 380,1000" class="decision"/>
+  <text x="500" y="1003" class="textdark">Every 2s?</text>
+  <line x1="620" y1="1000" x2="700" y2="1000" class="line"/>
+  <text x="660" y="990" font-size="11" fill="#e67e22">NO</text>
+
+  <!-- NO branch -->
+  <rect x="700" y="980" width="180" height="40" class="process" rx="20"/>
+  <text x="790" y="1005" class="textsmall">Skip sensors</text>
+  <line x1="880" y1="1000" x2="920" y2="1000" class="line"/>
+  <rect x="920" y="980" width="60" height="40" class="process" rx="20"/>
+  <text x="950" y="1005" class="textsmall">Loop</text>
+  <line x1="950" y1="1020" x2="950" y2="1150" class="line"/>
+
+  <!-- YES branch -->
+  <line x1="500" y1="1025" x2="500" y2="1055" class="line"/>
+
+  <rect x="330" y="1055" width="340" height="45" class="process"/>
+  <text x="500" y="1083" class="text">readSensors() + controlHeater()</text>
+  <line x1="500" y1="1100" x2="500" y2="1130" class="line"/>
+
+  <rect x="330" y="1130" width="340" height="45" class="process"/>
+  <text x="500" y="1158" class="text">diag_sample() + updateLCD()</text>
+
+  <!-- Merge to loop -->
+  <line x1="330" y1="1152" x2="200" y2="1152" class="line"/>
+  <line x1="200" y1="1152" x2="200" y2="1000" class="line"/>
+  <line x1="200" y1="1000" x2="380" y2="1000" class="line"/>
+  <text x="220" y="1070" font-size="11" fill="#3498db" transform="rotate(-90,220,1070)">Loop back</text>
+
+  <!-- ========== أسطورة ========== -->
+  <rect x="50" y="1100" width="250" height="90" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1.5" rx="5"/>
+  <text x="60" y="1120" font-size="12" font-weight="bold" fill="#2c3e50">📌 Legend:</text>
+  <rect x="60" y="1130" width="20" height="15" fill="#2c3e50" rx="25"/>
+  <text x="85" y="1143" font-size="11" fill="#2c3e50">Start / End</text>
+  <rect x="60" y="1150" width="20" height="15" fill="#3498db" rx="5"/>
+  <text x="85" y="1163" font-size="11" fill="#2c3e50">Process</text>
+  <rect x="160" y="1130" width="20" height="15" fill="#f39c12" rx="5"/>
+  <text x="185" y="1143" font-size="11" fill="#2c3e50">Decision</text>
+  <rect x="160" y="1150" width="20" height="15" fill="#2ecc71" rx="5"/>
+  <text x="185" y="1163" font-size="11" fill="#2c3e50">Sub‑process</text>
+
+</svg>

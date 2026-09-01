@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700">
+  <defs>
+    <style>
+      .t { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #1a1a2e; }
+      .h { font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; fill: #fff; }
+      .c { font-family: Arial, sans-serif; font-size: 11px; fill: #222; }
+      .s { font-family: Arial, sans-serif; font-size: 10px; fill: #555; }
+    </style>
+  </defs>
+  <rect width="1000" height="700" fill="#f8f9fa"/>
+  <rect x="15" y="15" width="970" height="670" rx="6" fill="#fff" stroke="#ced4da"/>
+
+  <text x="500" y="42" class="t" text-anchor="middle">ESP32 Egg Incubator — Bill of Materials (BOM)</text>
+  <text x="500" y="60" class="s" text-anchor="middle">Reference list · Quantities for one controller · Verify ratings for your heater/mains</text>
+
+  <!-- Header -->
+  <rect x="40" y="80" width="920" height="28" fill="#2c3e50"/>
+  <text x="55" y="99" class="h">#</text>
+  <text x="90" y="99" class="h">Component</text>
+  <text x="320" y="99" class="h">Qty</text>
+  <text x="370" y="99" class="h">Specification</text>
+  <text x="650" y="99" class="h">Notes</text>
+
+  <!-- Rows -->
+  <g font-family="Arial" font-size="11" fill="#222">
+    <rect x="40" y="108" width="920" height="26" fill="#ecf0f1"/>
+    <text x="55" y="126">1</text>
+    <text x="90" y="126">ESP32 Dev Module</text>
+    <text x="320" y="126">1</text>
+    <text x="370" y="126">ESP32-WROOM / DevKit</text>
+    <text x="650" y="126">USB programming</text>
+
+    <text x="55" y="152">2</text>
+    <text x="90" y="152">DS18B20</text>
+    <text x="320" y="152">2</text>
+    <text x="370" y="152">Waterproof probe preferred</text>
+    <text x="650" y="152">OneWire bus GPIO4</text>
+
+    <rect x="40" y="160" width="920" height="26" fill="#ecf0f1"/>
+    <text x="55" y="178">3</text>
+    <text x="90" y="178">DHT22 (AM2302)</text>
+    <text x="320" y="178">1</text>
+    <text x="370" y="178">Humidity + temp</text>
+    <text x="650" y="178">GPIO15</text>
+
+    <text x="55" y="204">4</text>
+    <text x="90" y="204">LCD 16×2 I²C</text>
+    <text x="320" y="204">1</text>
+    <text x="370" y="204">PCF8574 backpack 0x27</text>
+    <text x="650" y="204">Confirm address</text>
+
+    <rect x="40" y="212" width="920" height="26" fill="#ecf0f1"/>
+    <text x="55" y="230">5</text>
+    <text x="90" y="230">Relay module 5V</text>
+    <text x="320" y="230">4</text>
+    <text x="370" y="230">Optocoupled preferred</text>
+    <text x="650" y="230">H/F/T/E loads</text>
+
+    <text x="55" y="256">6</text>
+    <text x="90" y="256">Resistor 4.7 kΩ</text>
+    <text x="320" y="256">1</text>
+    <text x="370" y="256">1/4 W</text>
+    <text x="650" y="256">OneWire pull-up</text>
+
+    <rect x="40" y="264" width="920" height="26" fill="#ecf0f1"/>
+    <text x="55" y="282">7</text>
+    <text x="90" y="282">Resistor 220 Ω</text>
+    <text x="320" y="282">1</text>
+    <text x="370" y="282">1/4 W</text>
+    <text x="650" y="282">LED series</text>
+
+    <text x="55" y="308">8</text>
+    <text x="90" y="308">LED</text>
+    <text x="320" y="308">1</text>
+    <text x="370" y="308">Red 3–5 mm</text>
+    <text x="650" y="308">Sensor fail GPIO5</text>
+
+    <rect x="40" y="316" width="920" height="26" fill="#ecf0f1"/>
+    <text x="55" y="334">9</text>
+    <text x="90" y="334">PSU 5V</text>
+    <text x="320" y="334">1</text>
+    <text x="370" y="334">≥2 A recommended</text>
+    <text x="650" y="334">MCU + relays</text>
+
+    <text x="55" y="360">10</text>
+    <text x="90" y="360">PSU 12V (if needed)</text>
+    <text x="320" y="360">1</text>
+    <text x="370" y="360">Match fan/turner</text>
+    <text x="650" y="360">Isolated loads</text>
+
+    <rect x="40" y="368" width="920" height="26" fill="#ecf0f1"/>
+    <text x="55" y="386">11</text>
+    <text x="90" y="386">Heater element</text>
+    <text x="320" y="386">1</text>
+    <text x="370" y="386">Incubator-rated</text>
+    <text x="650" y="386">Via relay only</text>
+
+    <text x="55" y="412">12</text>
+    <text x="90" y="412">DC fan</text>
+    <text x="320" y="412">1</text>
+    <text x="370" y="412">12V typical</text>
+    <text x="650" y="412">Always-on logic</text>
+
+    <rect x="40" y="420" width="920" height="26" fill="#ecf0f1"/>
+    <text x="55" y="438">13</text>
+    <text x="90" y="438">Turner motor + mech.</text>
+    <text x="320" y="438">1</text>
+    <text x="370" y="438">Gearbox as needed</text>
+    <text x="650" y="438">Timed cycle</text>
+
+    <text x="55" y="464">14</text>
+    <text x="90" y="464">Evaporator / humidifier</text>
+    <text x="320" y="464">1</text>
+    <text x="370" y="464">Safe for chamber</text>
+    <text x="650" y="464">GPIO12</text>
+
+    <rect x="40" y="472" width="920" height="26" fill="#ecf0f1"/>
+    <text x="55" y="490">15</text>
+    <text x="90" y="490">Enclosure</text>
+    <text x="320" y="490">1</text>
+    <text x="370" y="490">ABS / Alu + vents</text>
+    <text x="650" y="490">See drawing 05</text>
+
+    <text x="55" y="516">16</text>
+    <text x="90" y="516">Hook-up wire, terminals</text>
+    <text x="320" y="516">lot</text>
+    <text x="370" y="516">Color-coded</text>
+    <text x="650" y="516">Strain relief</text>
+  </g>
+
+  <text x="40" y="560" class="s">Firmware libraries: DHT, OneWire, DallasTemperature, LiquidCrystal_I2C, (optional) EMailSender</text>
+  <text x="40" y="580" class="s">Do not commit secrets.h. Ship secrets.h.example only.</text>
+
+  <text x="500" y="660" class="s" text-anchor="middle">ESP32 Egg Incubator v2.0 · BOM · Update part numbers for your supply chain</text>
+</svg>

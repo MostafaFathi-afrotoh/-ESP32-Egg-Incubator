@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 900" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
+      <polygon points="0,0 8,4 0,8" fill="#2c3e50"/>
+    </marker>
+    <marker id="arrowRed" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
+      <polygon points="0,0 8,4 0,8" fill="#e74c3c"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto">
+      <polygon points="0,0 8,4 0,8" fill="#3498db"/>
+    </marker>
+    <linearGradient id="gndBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#95a5a6;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#7f8c8d;stop-opacity:0.4" />
+    </linearGradient>
+  </defs>
+
+  <!-- خلفية -->
+  <rect width="1100" height="900" fill="#ffffff" stroke="#2c3e50" stroke-width="2" rx="12"/>
+
+  <!-- العنوان -->
+  <text x="550" y="35" text-anchor="middle" font-size="24" font-weight="bold" fill="#2c3e50">ESP32 Incubator – Complete Circuit Schematic</text>
+  <text x="550" y="55" text-anchor="middle" font-size="13" fill="#7f8c8d">All GPIOs, Sensors, Actuators, Relay Drivers, and Power Distribution</text>
+
+  <line x1="50" y1="70" x2="1050" y2="70" stroke="#bdc3c7" stroke-width="1.5"/>
+
+  <!-- ============================================================ -->
+  <!-- 1. ESP32 DEV MODULE -->
+  <!-- ============================================================ -->
+  <rect x="380" y="120" width="320" height="190" fill="#eaf2f8" stroke="#2980b9" stroke-width="3" rx="10"/>
+  <text x="540" y="150" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a5276">ESP32 Dev Module</text>
+  <text x="540" y="170" text-anchor="middle" font-size="11" fill="#5d6d7e">ESP-WROOM-32 / ESP32-S3</text>
+
+  <!-- GPIO Pins (Left) -->
+  <text x="390" y="200" font-size="11" font-weight="bold" fill="#2c3e50">GPIO 4  →</text>
+  <text x="390" y="225" font-size="11" font-weight="bold" fill="#2c3e50">GPIO 15 →</text>
+  <text x="390" y="250" font-size="11" font-weight="bold" fill="#2c3e50">GPIO 5  →</text>
+  <text x="390" y="275" font-size="11" font-weight="bold" fill="#2c3e50">GPIO 13 →</text>
+  <text x="390" y="300" font-size="11" font-weight="bold" fill="#2c3e50">GPIO 14 →</text>
+  <text x="390" y="325" font-size="11" font-weight="bold" fill="#2c3e50">GPIO 27 →</text>
+  <text x="390" y="350" font-size="11" font-weight="bold" fill="#2c3e50">GPIO 12 →</text>
+
+  <!-- GPIO Pins (Right) -->
+  <text x="690" y="200" font-size="11" font-weight="bold" fill="#2c3e50">← I²C SDA</text>
+  <text x="690" y="225" font-size="11" font-weight="bold" fill="#2c3e50">← I²C SCL</text>
+  <text x="690" y="250" font-size="11" font-weight="bold" fill="#2c3e50">← 3.3V</text>
+  <text x="690" y="275" font-size="11" font-weight="bold" fill="#2c3e50">← GND</text>
+  <text x="690" y="300" font-size="11" font-weight="bold" fill="#2c3e50">← EN</text>
+  <text x="690" y="325" font-size="11" font-weight="bold" fill="#7f8c8d">(GPIO21/22 for I²C)</text>
+
+  <!-- ============================================================ -->
+  <!-- 2. POWER SUPPLY -->
+  <!-- ============================================================ -->
+  <rect x="50" y="100" width="260" height="140" fill="#fef9e7" stroke="#f39c12" stroke-width="2" rx="10"/>
+  <text x="180" y="125" text-anchor="middle" font-size="16" font-weight="bold" fill="#d35400">⚡ Power Supply</text>
+  <rect x="65" y="140" width="230" height="80" fill="#fdebd0" stroke="#e67e22" stroke-width="1.5" rx="5"/>
+  <text x="180" y="162" text-anchor="middle" font-size="13" fill="#6c3483">AC‑DC Adapter</text>
+  <text x="180" y="182" text-anchor="middle" font-size="11" fill="#7f8c8d">Input: AC 220V</text>
+  <text x="180" y="200" text-anchor="middle" font-size="11" fill="#7f8c8d">Output: DC 5V 2A</text>
+  <!-- 5V output -->
+  <line x1="180" y1="240" x2="180" y2="270" stroke="#e67e22" stroke-width="2"/>
+  <text x="185" y="258" font-size="10" fill="#e67e22">5V</text>
+
+  <!-- LDO 3.3V -->
+  <rect x="145" y="270" width="70" height="40" fill="#f5b7b1" stroke="#c0392b" stroke-width="1.5" rx="5"/>
+  <text x="180" y="295" text-anchor="middle" font-size="11" font-weight="bold" fill="#922b21">LDO 3.3V</text>
+  <line x1="180" y1="310" x2="180" y2="340" stroke="#c0392b" stroke-width="2"/>
+  <text x="185" y="328" font-size="10" fill="#c0392b">3.3V</text>
+
+  <!-- GND line -->
+  <line x1="180" y1="240" x2="400" y2="240" stroke="#95a5a6" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="290" y="235" font-size="10" fill="#7f8c8d">GND</text>
+
+  <!-- ============================================================ -->
+  <!-- 3. SENSORS -->
+  <!-- ============================================================ -->
+  <!-- DS18B20 -->
+  <rect x="50" y="390" width="260" height="120" fill="#ebf5fb" stroke="#3498db" stroke-width="2" rx="10"/>
+  <text x="180" y="418" text-anchor="middle" font-size="16" font-weight="bold" fill="#2980b9">🌡️ DS18B20 (×2)</text>
+  <!-- 1-Wire bus -->
+  <line x1="80" y1="440" x2="140" y2="440" stroke="#2c3e50" stroke-width="1.5"/>
+  <circle cx="140" cy="440" r="20" fill="none" stroke="#2c3e50" stroke-width="1.5"/>
+  <text x="140" y="445" text-anchor="middle" font-size="10" fill="#2c3e50">1‑Wire</text>
+  <line x1="160" y1="440" x2="200" y2="440" stroke="#2c3e50" stroke-width="1.5"/>
+  <text x="210" y="445" font-size="10" fill="#2c3e50">→ GPIO 4</text>
+  <!-- Pull-up resistor -->
+  <line x1="140" y1="420" x2="140" y2="385" stroke="#e67e22" stroke-width="1.5"/>
+  <rect x="125" y="380" width="30" height="15" fill="#fdebd0" stroke="#e67e22" stroke-width="1"/>
+  <text x="140" y="392" text-anchor="middle" font-size="9" fill="#d35400">4.7k</text>
+  <line x1="140" y1="380" x2="140" y2="365" stroke="#e67e22" stroke-width="1.5"/>
+  <text x="145" y="370" font-size="9" fill="#e67e22">3.3V</text>
+
+  <!-- DHT22 -->
+  <rect x="50" y="530" width="260" height="100" fill="#eafaf1" stroke="#27ae60" stroke-width="2" rx="10"/>
+  <text x="180" y="558" text-anchor="middle" font-size="16" font-weight="bold" fill="#27ae60">💧 DHT22</text>
+  <text x="180" y="582" text-anchor="middle" font-size="12" fill="#1a6e34">GPIO 15 (Data)</text>
+  <text x="180" y="600" text-anchor="middle" font-size="10" fill="#7f8c8d">VCC: 3.3V · GND: GND</text>
+
+  <!-- LCD I2C -->
+  <rect x="50" y="650" width="260" height="100" fill="#f4ecf7" stroke="#9b59b6" stroke-width="2" rx="10"/>
+  <text x="180" y="678" text-anchor="middle" font-size="16" font-weight="bold" fill="#8e44ad">🖥️ LCD 16×2</text>
+  <text x="180" y="702" text-anchor="middle" font-size="12" fill="#6c3483">I²C Address: 0x27</text>
+  <text x="180" y="720" text-anchor="middle" font-size="10" fill="#7f8c8d">SDA (GPIO21) · SCL (GPIO22) · VCC: 5V</text>
+
+  <!-- LED -->
+  <rect x="50" y="770" width="260" height="60" fill="#fef5e7" stroke="#f39c12" stroke-width="2" rx="10"/>
+  <text x="180" y="798" text-anchor="middle" font-size="14" font-weight="bold" fill="#d35400">🔴 Sensor Fail LED</text>
+  <text x="180" y="816" text-anchor="middle" font-size="10" fill="#7f8c8d">GPIO 5 → 220Ω → LED → GND</text>
+
+  <!-- ============================================================ -->
+  <!-- 4. OUTPUTS / ACTUATORS (Right) -->
+  <!-- ============================================================ -->
+  <!-- Heater Relay -->
+  <rect x="790" y="390" width="260" height="100" fill="#fdedec" stroke="#e74c3c" stroke-width="2" rx="10"/>
+  <text x="920" y="418" text-anchor="middle" font-size="16" font-weight="bold" fill="#c0392b">🔥 Heater Relay</text>
+  <rect x="810" y="430" width="120" height="40" fill="#f5b7b1" stroke="#e74c3c" stroke-width="1.5" rx="5"/>
+  <text x="870" y="448" text-anchor="middle" font-size="11" font-weight="bold" fill="#922b21">Optocoupled</text>
+  <text x="870" y="463" text-anchor="middle" font-size="9" fill="#7f8c8d">GPIO 27 · AC Load 10A</text>
+
+  <!-- Fan MOSFET -->
+  <rect x="790" y="510" width="260" height="100" fill="#ebf5fb" stroke="#3498db" stroke-width="2" rx="10"/>
+  <text x="920" y="538" text-anchor="middle" font-size="16" font-weight="bold" fill="#2980b9">🌀 Fan Driver</text>
+  <rect x="810" y="550" width="120" height="40" fill="#aed6f1" stroke="#3498db" stroke-width="1.5" rx="5"/>
+  <text x="870" y="568" text-anchor="middle" font-size="11" font-weight="bold" fill="#1a5276">MOSFET</text>
+  <text x="870" y="583" text-anchor="middle" font-size="9" fill="#7f8c8d">GPIO 13 · 12V Fan</text>
+
+  <!-- Turner Motor Driver -->
+  <rect x="790" y="630" width="260" height="100" fill="#eafaf1" stroke="#2ecc71" stroke-width="2" rx="10"/>
+  <text x="920" y="658" text-anchor="middle" font-size="16" font-weight="bold" fill="#27ae60">🔄 Turner Driver</text>
+  <rect x="810" y="670" width="120" height="40" fill="#a9dfbf" stroke="#2ecc71" stroke-width="1.5" rx="5"/>
+  <text x="870" y="688" text-anchor="middle" font-size="11" font-weight="bold" fill="#1a6e34">Motor Driver</text>
+  <text x="870" y="703" text-anchor="middle" font-size="9" fill="#7f8c8d">GPIO 14 · 12V Motor</text>
+
+  <!-- Evaporator Relay -->
+  <rect x="790" y="750" width="260" height="80" fill="#fdedec" stroke="#e74c3c" stroke-width="2" rx="10"/>
+  <text x="920" y="778" text-anchor="middle" font-size="16" font-weight="bold" fill="#c0392b">💨 Evaporator Relay</text>
+  <rect x="810" y="790" width="120" height="30" fill="#f5b7b1" stroke="#e74c3c" stroke-width="1.5" rx="5"/>
+  <text x="870" y="810" text-anchor="middle" font-size="10" font-weight="bold" fill="#922b21">GPIO 12</text>
+
+  <!-- ============================================================ -->
+  <!-- 5. CONNECTION LINES -->
+  <!-- ============================================================ -->
+  <!-- Sensor lines -->
+  <line x1="390" y1="200" x2="310" y2="440" stroke="#3498db" stroke-width="2"/>
+  <line x1="390" y1="225" x2="310" y2="565" stroke="#27ae60" stroke-width="2"/>
+  <line x1="690" y1="200" x2="730" y2="690" stroke="#9b59b6" stroke-width="2"/>
+  <line x1="390" y1="250" x2="310" y2="798" stroke="#f39c12" stroke-width="2"/>
+
+  <!-- Output lines -->
+  <line x1="690" y1="325" x2="790" y2="450" stroke="#e74c3c" stroke-width="2"/>
+  <line x1="690" y1="275" x2="790" y2="570" stroke="#3498db" stroke-width="2"/>
+  <line x1="690" y1="300" x2="790" y2="690" stroke="#2ecc71" stroke-width="2"/>
+  <line x1="690" y1="350" x2="790" y2="805" stroke="#e74c3c" stroke-width="2"/>
+
+  <!-- Power lines -->
+  <line x1="310" y1="350" x2="380" y2="250" stroke="#c0392b" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="340" y="300" font-size="9" fill="#c0392b">3.3V</text>
+  <line x1="310" y1="240" x2="380" y2="275" stroke="#95a5a6" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="340" y="260" font-size="9" fill="#7f8c8d">GND</text>
+
+  <!-- ============================================================ -->
+  <!-- 6. BOM SUMMARY -->
+  <!-- ============================================================ -->
+  <rect x="50" y="850" width="1000" height="35" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1.5" rx="5"/>
+  <text x="550" y="870" text-anchor="middle" font-size="11" fill="#2c3e50">
+    BOM: ESP32 Dev Board + DS18B20 (×2) + DHT22 + LCD 16×2 I²C + 5V 2A Adapter + Relays (×2) + MOSFET + Cables
+  </text>
+</svg>

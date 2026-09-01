@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" font-family="Arial, sans-serif">
+  <!-- خلفية -->
+  <rect width="900" height="600" fill="#ffffff" stroke="#2c3e50" stroke-width="2" rx="10"/>
+
+  <!-- العنوان -->
+  <text x="450" y="40" text-anchor="middle" font-size="22" font-weight="bold" fill="#2c3e50">Health Score Over Time (30 Days)</text>
+  <text x="450" y="60" text-anchor="middle" font-size="13" fill="#7f8c8d">Simulated daily health score with degradation trend</text>
+  <line x1="50" y1="75" x2="850" y2="75" stroke="#bdc3c7" stroke-width="1.5"/>
+
+  <!-- منطقة الرسم -->
+  <rect x="80" y="100" width="740" height="400" fill="#f8f9fa" stroke="#bdc3c7" stroke-width="1"/>
+
+  <!-- خطوط الشبكة الأفقية -->
+  <line x1="80" y1="120" x2="820" y2="120" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="80" y1="180" x2="820" y2="180" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="80" y1="240" x2="820" y2="240" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="80" y1="300" x2="820" y2="300" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="80" y1="360" x2="820" y2="360" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="80" y1="420" x2="820" y2="420" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="80" y1="480" x2="820" y2="480" stroke="#ecf0f1" stroke-width="1"/>
+
+  <!-- تسميات المحور Y -->
+  <text x="70" y="125" text-anchor="end" font-size="11" fill="#2c3e50">100</text>
+  <text x="70" y="185" text-anchor="end" font-size="11" fill="#2c3e50">80</text>
+  <text x="70" y="245" text-anchor="end" font-size="11" fill="#2c3e50">60</text>
+  <text x="70" y="305" text-anchor="end" font-size="11" fill="#2c3e50">40</text>
+  <text x="70" y="365" text-anchor="end" font-size="11" fill="#2c3e50">20</text>
+  <text x="70" y="425" text-anchor="end" font-size="11" fill="#2c3e50">0</text>
+
+  <!-- خطوط الشبكة الرأسية -->
+  <line x1="130" y1="100" x2="130" y2="500" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="200" y1="100" x2="200" y2="500" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="270" y1="100" x2="270" y2="500" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="340" y1="100" x2="340" y2="500" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="410" y1="100" x2="410" y2="500" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="480" y1="100" x2="480" y2="500" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="550" y1="100" x2="550" y2="500" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="620" y1="100" x2="620" y2="500" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="690" y1="100" x2="690" y2="500" stroke="#ecf0f1" stroke-width="1"/>
+  <line x1="760" y1="100" x2="760" y2="500" stroke="#ecf0f1" stroke-width="1"/>
+
+  <!-- تسميات المحور X -->
+  <text x="130" y="520" text-anchor="middle" font-size="10" fill="#2c3e50">Day 5</text>
+  <text x="270" y="520" text-anchor="middle" font-size="10" fill="#2c3e50">Day 15</text>
+  <text x="410" y="520" text-anchor="middle" font-size="10" fill="#2c3e50">Day 25</text>
+  <text x="550" y="520" text-anchor="middle" font-size="10" fill="#2c3e50">Day 35</text>
+  <text x="690" y="520" text-anchor="middle" font-size="10" fill="#2c3e50">Day 45</text>
+
+  <!-- نقاط Health Score الفعلية -->
+  <!-- سلسلة النقاط: (x, y) حيث y = 500 - (health / 100 * 400) -->
+  <!-- اليوم 1: 98% → y=108 -->
+  <circle cx="105" cy="108" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 2: 96% → y=116 -->
+  <circle cx="130" cy="116" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 3: 95% → y=120 -->
+  <circle cx="155" cy="120" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 4: 93% → y=128 -->
+  <circle cx="180" cy="128" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 5: 91% → y=136 -->
+  <circle cx="205" cy="136" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 6: 90% → y=140 -->
+  <circle cx="230" cy="140" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 7: 88% → y=148 -->
+  <circle cx="255" cy="148" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 8: 86% → y=156 -->
+  <circle cx="280" cy="156" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 9: 84% → y=164 -->
+  <circle cx="305" cy="164" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 10: 82% → y=172 -->
+  <circle cx="330" cy="172" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 11: 80% → y=180 -->
+  <circle cx="355" cy="180" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 12: 78% → y=188 -->
+  <circle cx="380" cy="188" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 13: 75% → y=200 -->
+  <circle cx="405" cy="200" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 14: 73% → y=208 -->
+  <circle cx="430" cy="208" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 15: 70% → y=220 -->
+  <circle cx="455" cy="220" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 16: 68% → y=228 -->
+  <circle cx="480" cy="228" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 17: 65% → y=240 -->
+  <circle cx="505" cy="240" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 18: 62% → y=252 -->
+  <circle cx="530" cy="252" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 19: 60% → y=260 -->
+  <circle cx="555" cy="260" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 20: 57% → y=272 -->
+  <circle cx="580" cy="272" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 21: 55% → y=280 -->
+  <circle cx="605" cy="280" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 22: 52% → y=292 -->
+  <circle cx="630" cy="292" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 23: 50% → y=300 -->
+  <circle cx="655" cy="300" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 24: 47% → y=312 -->
+  <circle cx="680" cy="312" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 25: 45% → y=320 -->
+  <circle cx="705" cy="320" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 26: 42% → y=332 -->
+  <circle cx="730" cy="332" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 27: 40% → y=340 -->
+  <circle cx="755" cy="340" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 28: 38% → y=348 -->
+  <circle cx="780" cy="348" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 29: 35% → y=360 -->
+  <circle cx="805" cy="360" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+  <!-- اليوم 30: 33% → y=368 -->
+  <circle cx="830" cy="368" r="6" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+
+  <!-- خط الاتجاه (Trend Line) -->
+  <!-- من (80, 115) إلى (850, 375) -->
+  <line x1="80" y1="115" x2="850" y2="375" stroke="#2980b9" stroke-width="3" stroke-dasharray="8,4"/>
+  <text x="820" y="385" font-size="11" fill="#2980b9">Trend: -1.2 pts/day</text>
+
+  <!-- خط الـ 70% -->
+  <line x1="80" y1="220" x2="820" y2="220" stroke="#f39c12" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="70" y="225" text-anchor="end" font-size="10" fill="#f39c12">70%</text>
+
+  <!-- خط الـ 50% -->
+  <line x1="80" y1="300" x2="820" y2="300" stroke="#e74c3c" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="70" y="305" text-anchor="end" font-size="10" fill="#e74c3c">50%</text>
+
+  <!-- منطقة الخطر -->
+  <rect x="80" y="340" width="740" height="160" fill="#e74c3c" fill-opacity="0.1" stroke="none"/>
+
+  <!-- تعريف المناطق -->
+  <text x="450" y="545" text-anchor="middle" font-size="12" fill="#2c3e50">Performance Zones: █ Excellent (85+) █ Good (70-85) █ Warning (50-70) █ Critical (below 50)</text>
+
+</svg>

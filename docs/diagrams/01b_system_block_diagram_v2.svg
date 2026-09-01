@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" font-family="Arial, sans-serif">
+  <defs>
+    <!-- تدرج الألوان -->
+    <linearGradient id="gradESP32" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2c3e50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a252f;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradSensor" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradOutput" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradActuator" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2ecc71;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#27ae60;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradComm" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f39c12;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e67e22;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradStorage" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9b59b6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8e44ad;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradDisplay" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1abc9c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16a085;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- خلفية -->
+  <rect width="1000" height="750" fill="#f8f9fa" stroke="#2c3e50" stroke-width="2" rx="12"/>
+
+  <!-- العنوان -->
+  <text x="500" y="40" text-anchor="middle" font-size="24" font-weight="bold" fill="#2c3e50">ESP32 Egg Incubator – System Block Diagram</text>
+  <text x="500" y="62" text-anchor="middle" font-size="14" fill="#7f8c8d">Professional Version 2.0 | Main Sketch: Memory10_2.ino</text>
+
+  <!-- خط فاصل -->
+  <line x1="50" y1="75" x2="950" y2="75" stroke="#bdc3c7" stroke-width="1.5"/>
+
+  <!-- ==================== ESP32 ==================== -->
+  <rect x="330" y="200" width="340" height="150" fill="url(#gradESP32)" stroke="#0e2f44" stroke-width="3" rx="15"/>
+  <text x="500" y="250" text-anchor="middle" font-size="26" font-weight="bold" fill="#ecf0f1">🧠 ESP32</text>
+  <text x="500" y="280" text-anchor="middle" font-size="16" fill="#aed6f1">Main Controller</text>
+  <text x="500" y="305" text-anchor="middle" font-size="13" fill="#bdc3c7">C++ (Arduino Framework)</text>
+  <text x="500" y="328" text-anchor="middle" font-size="11" fill="#7f8c8d">Watchdog: 8s | NVS Storage</text>
+
+  <!-- ==================== المدخلات (اليسار) ==================== -->
+  <!-- DS18B20 -->
+  <rect x="30" y="100" width="220" height="90" fill="url(#gradSensor)" stroke="#1a5276" stroke-width="2" rx="10"/>
+  <text x="140" y="135" text-anchor="middle" font-size="18" font-weight="bold" fill="white">🌡️ DS18B20</text>
+  <text x="140" y="160" text-anchor="middle" font-size="12" fill="#d4e6f1">Temperature Sensors (×2)</text>
+  <text x="140" y="178" text-anchor="middle" font-size="10" fill="#aed6f1">GPIO 4 · OneWire Bus</text>
+
+  <!-- DHT22 -->
+  <rect x="30" y="210" width="220" height="90" fill="url(#gradSensor)" stroke="#1a5276" stroke-width="2" rx="10"/>
+  <text x="140" y="245" text-anchor="middle" font-size="18" font-weight="bold" fill="white">💧 DHT22</text>
+  <text x="140" y="270" text-anchor="middle" font-size="12" fill="#d4e6f1">Humidity + Backup Temp</text>
+  <text x="140" y="288" text-anchor="middle" font-size="10" fill="#aed6f1">GPIO 15</text>
+
+  <!-- LCD Display -->
+  <rect x="30" y="320" width="220" height="90" fill="url(#gradDisplay)" stroke="#0e6655" stroke-width="2" rx="10"/>
+  <text x="140" y="355" text-anchor="middle" font-size="18" font-weight="bold" fill="white">🖥️ LCD 16×2</text>
+  <text x="140" y="380" text-anchor="middle" font-size="12" fill="#d1f2eb">Status Display</text>
+  <text x="140" y="398" text-anchor="middle" font-size="10" fill="#a3e4d7">I²C (0x27) · GPIO 21/22</text>
+
+  <!-- LED Fail -->
+  <rect x="30" y="430" width="220" height="70" fill="#f5b041" stroke="#d35400" stroke-width="2" rx="10"/>
+  <text x="140" y="462" text-anchor="middle" font-size="18" font-weight="bold" fill="white">🔴 LED Fail</text>
+  <text x="140" y="485" text-anchor="middle" font-size="11" fill="#fdebd0">GPIO 5 · Sensor Error Indicator</text>
+
+  <!-- ==================== المخرجات (اليمين) ==================== -->
+  <!-- Heater -->
+  <rect x="750" y="100" width="220" height="90" fill="url(#gradOutput)" stroke="#922b21" stroke-width="2" rx="10"/>
+  <text x="860" y="135" text-anchor="middle" font-size="18" font-weight="bold" fill="white">🔥 Heater</text>
+  <text x="860" y="160" text-anchor="middle" font-size="12" fill="#f5b7b1">AC Load (via Relay)</text>
+  <text x="860" y="178" text-anchor="middle" font-size="10" fill="#f5b7b1">GPIO 27</text>
+
+  <!-- Fan -->
+  <rect x="750" y="210" width="220" height="90" fill="url(#gradActuator)" stroke="#1e8449" stroke-width="2" rx="10"/>
+  <text x="860" y="245" text-anchor="middle" font-size="18" font-weight="bold" fill="white">🌀 Fan</text>
+  <text x="860" y="270" text-anchor="middle" font-size="12" fill="#a9dfbf">Always ON</text>
+  <text x="860" y="288" text-anchor="middle" font-size="10" fill="#a9dfbf">GPIO 13 · MOSFET Driver</text>
+
+  <!-- Turner -->
+  <rect x="750" y="320" width="220" height="90" fill="url(#gradActuator)" stroke="#1e8449" stroke-width="2" rx="10"/>
+  <text x="860" y="355" text-anchor="middle" font-size="18" font-weight="bold" fill="white">🔄 Turner</text>
+  <text x="860" y="380" text-anchor="middle" font-size="12" fill="#a9dfbf">60s OFF / 15s ON</text>
+  <text x="860" y="398" text-anchor="middle" font-size="10" fill="#a9dfbf">GPIO 14 · Motor Driver</text>
+
+  <!-- Evaporator -->
+  <rect x="750" y="430" width="220" height="70" fill="url(#gradOutput)" stroke="#922b21" stroke-width="2" rx="10"/>
+  <text x="860" y="462" text-anchor="middle" font-size="18" font-weight="bold" fill="white">💨 Evaporator</text>
+  <text x="860" y="485" text-anchor="middle" font-size="11" fill="#f5b7b1">GPIO 12 · Relay</text>
+
+  <!-- ==================== الاتصالات (أسفل) ==================== -->
+  <!-- WiFi -->
+  <rect x="140" y="560" width="180" height="65" fill="url(#gradComm)" stroke="#b7950b" stroke-width="2" rx="10"/>
+  <text x="230" y="590" text-anchor="middle" font-size="16" font-weight="bold" fill="white">📶 WiFi (STA)</text>
+  <text x="230" y="612" text-anchor="middle" font-size="11" fill="#fdebd0">Exponential Backoff</text>
+
+  <!-- Adafruit IO -->
+  <rect x="390" y="560" width="180" height="65" fill="url(#gradComm)" stroke="#b7950b" stroke-width="2" rx="10"/>
+  <text x="480" y="590" text-anchor="middle" font-size="16" font-weight="bold" fill="white">☁️ Adafruit IO</text>
+  <text x="480" y="612" text-anchor="middle" font-size="11" fill="#fdebd0">MQTT/HTTP · Rate‑Limited</text>
+
+  <!-- Telegram -->
+  <rect x="640" y="560" width="180" height="65" fill="url(#gradComm)" stroke="#b7950b" stroke-width="2" rx="10"/>
+  <text x="730" y="590" text-anchor="middle" font-size="16" font-weight="bold" fill="white">📱 Telegram</text>
+  <text x="730" y="612" text-anchor="middle" font-size="11" fill="#fdebd0">Debounced Alerts</text>
+
+  <!-- NVS Storage -->
+  <rect x="300" y="660" width="400" height="60" fill="url(#gradStorage)" stroke="#6c3483" stroke-width="2" rx="10"/>
+  <text x="500" y="690" text-anchor="middle" font-size="16" font-weight="bold" fill="white">💾 NVS Storage</text>
+  <text x="500" y="710" text-anchor="middle" font-size="11" fill="#d7bde2">Dual‑Blob + CRC16 · Diagnostics, Cycle Archive, Fault Ring</text>
+
+  <!-- ==================== الأسهم ووصلات الإشارة ==================== -->
+  <!-- Input to ESP32 -->
+  <line x1="250" y1="145" x2="330" y2="240" stroke="#3498db" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <polygon points="325,245 330,235 335,245" fill="#3498db"/>
+
+  <line x1="250" y1="255" x2="330" y2="270" stroke="#3498db" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <polygon points="325,275 330,265 335,275" fill="#3498db"/>
+
+  <line x1="250" y1="365" x2="330" y2="300" stroke="#1abc9c" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <polygon points="325,305 330,295 335,305" fill="#1abc9c"/>
+
+  <line x1="250" y1="465" x2="330" y2="350" stroke="#f39c12" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <polygon points="325,355 330,345 335,355" fill="#f39c12"/>
+
+  <!-- ESP32 to Output -->
+  <line x1="670" y1="240" x2="750" y2="145" stroke="#e74c3c" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <polygon points="745,150 750,140 755,150" fill="#e74c3c"/>
+
+  <line x1="670" y1="270" x2="750" y2="255" stroke="#2ecc71" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <polygon points="745,260 750,250 755,260" fill="#2ecc71"/>
+
+  <line x1="670" y1="300" x2="750" y2="365" stroke="#2ecc71" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <polygon points="745,360 750,370 755,360" fill="#2ecc71"/>
+
+  <line x1="670" y1="330" x2="750" y2="465" stroke="#e74c3c" stroke-width="2.5" stroke-dasharray="6,4"/>
+  <polygon points="745,460 750,470 755,460" fill="#e74c3c"/>
+
+  <!-- ESP32 to Communication -->
+  <line x1="400" y1="350" x2="300" y2="560" stroke="#f39c12" stroke-width="2" stroke-dasharray="5,3"/>
+  <line x1="500" y1="350" x2="480" y2="560" stroke="#f39c12" stroke-width="2" stroke-dasharray="5,3"/>
+  <line x1="600" y1="350" x2="700" y2="560" stroke="#f39c12" stroke-width="2" stroke-dasharray="5,3"/>
+
+  <!-- إلى NVS Storage -->
+  <line x1="500" y1="350" x2="500" y2="660" stroke="#9b59b6" stroke-width="2" stroke-dasharray="4,4"/>
+  <polygon points="495,655 500,665 505,655" fill="#9b59b6"/>
+
+  <!-- ==================== الأسطورة ==================== -->
+  <rect x="50" y="700" width="450" height="40" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="1.5" rx="5"/>
+  <text x="70" y="720" font-size="12" font-weight="bold" fill="#2c3e50">📌 Legend:</text>
+  <rect x="160" y="710" width="14" height="10" fill="#3498db"/>
+  <text x="178" y="720" font-size="11" fill="#2c3e50">Sensors</text>
+  <rect x="240" y="710" width="14" height="10" fill="#e74c3c"/>
+  <text x="258" y="720" font-size="11" fill="#2c3e50">Loads</text>
+  <rect x="320" y="710" width="14" height="10" fill="#2ecc71"/>
+  <text x="338" y="720" font-size="11" fill="#2c3e50">Actuators</text>
+  <rect x="420" y="710" width="14" height="10" fill="#f39c12"/>
+  <text x="438" y="720" font-size="11" fill="#2c3e50">Comm</text>
+</svg>

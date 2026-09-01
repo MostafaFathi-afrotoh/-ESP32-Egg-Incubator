@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="750" viewBox="0 0 1000 750">
+  <defs>
+    <style>
+      .t { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #1a1a2e; }
+      .s { font-family: Arial, sans-serif; font-size: 11px; fill: #555; }
+      .l { font-family: Arial, sans-serif; font-size: 10px; fill: #222; }
+      .c { font-family: Arial, sans-serif; font-size: 10px; fill: #fff; font-weight: bold; text-anchor: middle; }
+    </style>
+  </defs>
+  <rect width="1000" height="750" fill="#f8f9fa"/>
+  <rect x="15" y="15" width="970" height="720" rx="6" fill="#fff" stroke="#ced4da"/>
+
+  <text x="500" y="42" class="t" text-anchor="middle">ESP32 Egg Incubator — PCB Layout Guide (2-Layer FR4)</text>
+  <text x="500" y="60" class="s" text-anchor="middle">Recommended placement · Not a Gerber-ready design · Keep AC/power away from sensor lines</text>
+
+  <!-- Board outline -->
+  <rect x="120" y="90" width="760" height="420" rx="4" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" stroke-dasharray="8 4"/>
+  <text x="140" y="110" class="l" fill="#2e7d32">PCB outline (example ~100 × 70 mm class — scale to fit enclosure)</text>
+
+  <!-- ESP32 center -->
+  <rect x="380" y="200" width="140" height="100" rx="4" fill="#2c3e50"/>
+  <text x="450" y="245" class="c" font-size="12">ESP32</text>
+  <text x="450" y="265" class="c">MODULE</text>
+  <text x="450" y="280" class="c" font-size="8">USB edge →</text>
+
+  <!-- Sensors left -->
+  <rect x="150" y="150" width="100" height="50" rx="3" fill="#3498db"/>
+  <text x="200" y="175" class="c">DS18B20</text>
+  <text x="200" y="190" class="c" font-size="8">connector</text>
+
+  <rect x="150" y="220" width="100" height="40" rx="3" fill="#27ae60"/>
+  <text x="200" y="245" class="c">DHT22</text>
+
+  <rect x="150" y="280" width="100" height="40" rx="3" fill="#e67e22"/>
+  <text x="200" y="305" class="c">I²C LCD</text>
+
+  <!-- Relays right -->
+  <rect x="600" y="140" width="90" height="35" rx="3" fill="#c0392b"/>
+  <text x="645" y="162" class="c">RLY H</text>
+  <rect x="700" y="140" width="90" height="35" rx="3" fill="#2980b9"/>
+  <text x="745" y="162" class="c">RLY F</text>
+  <rect x="600" y="190" width="90" height="35" rx="3" fill="#8e44ad"/>
+  <text x="645" y="212" class="c">RLY T</text>
+  <rect x="700" y="190" width="90" height="35" rx="3" fill="#148f77"/>
+  <text x="745" y="212" class="c">RLY E</text>
+
+  <!-- Power bottom -->
+  <rect x="380" y="360" width="140" height="50" rx="3" fill="#f39c12"/>
+  <text x="450" y="385" class="c">5V / 12V IN</text>
+  <text x="450" y="400" class="c" font-size="8">terminal block</text>
+
+  <!-- Decoupling note -->
+  <circle cx="360" cy="220" r="12" fill="#f1c40f" stroke="#b7950b"/>
+  <text x="360" y="224" class="c" font-size="8">C</text>
+  <text x="300" y="215" class="l">0.1µF near 3V3</text>
+
+  <!-- Design rules box -->
+  <rect x="40" y="530" width="920" height="180" rx="6" fill="#eef2f7" stroke="#7f8c8d"/>
+  <text x="60" y="555" class="l" font-weight="bold" font-size="12">Layout rules</text>
+  <text x="60" y="580" class="l">1. Place ESP32 near board center; USB connector on outer edge for programming access.</text>
+  <text x="60" y="600" class="l">2. Keep OneWire (GPIO4) and I²C short; pull-up 4.7kΩ close to sensor connector.</text>
+  <text x="60" y="620" class="l">3. Route relay drive lines away from sensor analog-ish digital lines; use ground pour on bottom layer.</text>
+  <text x="60" y="640" class="l">4. High-current load returns must not share thin signal ground paths (star or split plane).</text>
+  <text x="60" y="660" class="l">5. If switching mains: creepage/clearance per local standard; opto relays preferred on separate zone.</text>
+  <text x="60" y="680" class="l">6. Decoupling: 100 nF at ESP32 3V3; bulk 10–47 µF on 5V input.</text>
+  <text x="60" y="700" class="l">7. Label silkscreen: GPIO numbers matching firmware (4,5,12,13,14,15,27).</text>
+
+  <text x="500" y="725" class="s" text-anchor="middle">ESP32 Egg Incubator v2.0 · PCB Layout Guide</text>
+</svg>

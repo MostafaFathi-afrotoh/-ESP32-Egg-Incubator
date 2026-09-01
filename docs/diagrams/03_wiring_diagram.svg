@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="820" viewBox="0 0 1100 820">
+  <defs>
+    <style>
+      .t { font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; fill: #1a1a2e; }
+      .s { font-family: Arial, sans-serif; font-size: 11px; fill: #555; }
+      .l { font-family: Arial, sans-serif; font-size: 11px; fill: #222; }
+      .c { font-family: Arial, sans-serif; font-size: 10px; fill: #fff; font-weight: bold; text-anchor: middle; }
+      .n { font-family: Arial, sans-serif; font-size: 10px; fill: #333; }
+    </style>
+  </defs>
+  <rect width="1100" height="820" fill="#f8f9fa"/>
+  <rect x="15" y="15" width="1070" height="790" rx="6" fill="#fff" stroke="#ced4da"/>
+
+  <text x="550" y="45" class="t" text-anchor="middle">ESP32 Egg Incubator — Practical Wiring Diagram</text>
+  <text x="550" y="65" class="s" text-anchor="middle">Bench / chassis wiring guide · Color codes recommended · Verify with multimeter before power</text>
+
+  <!-- ESP32 board -->
+  <rect x="400" y="100" width="180" height="120" rx="8" fill="#2c3e50"/>
+  <text x="490" y="140" class="c" font-size="14">ESP32</text>
+  <text x="490" y="160" class="c">Dev Module</text>
+  <text x="490" y="185" class="c" font-size="9">USB · 3V3 · GND</text>
+  <text x="490" y="202" class="c" font-size="9">GPIO 4,5,12–15,27</text>
+
+  <!-- Sensors left -->
+  <rect x="40" y="90" width="130" height="55" rx="6" fill="#3498db"/>
+  <text x="105" y="115" class="c">DS18B20 ×2</text>
+  <text x="105" y="132" class="c" font-size="9">Yellow DATA</text>
+
+  <rect x="40" y="160" width="130" height="45" rx="6" fill="#27ae60"/>
+  <text x="105" y="180" class="c">DHT22</text>
+  <text x="105" y="195" class="c" font-size="9">DATA → GPIO15</text>
+
+  <rect x="40" y="220" width="130" height="45" rx="6" fill="#e67e22"/>
+  <text x="105" y="240" class="c">LCD I²C</text>
+  <text x="105" y="255" class="c" font-size="9">0x27 SDA/SCL</text>
+
+  <rect x="40" y="280" width="130" height="40" rx="6" fill="#e74c3c"/>
+  <text x="105" y="305" class="c">LED + 220Ω</text>
+
+  <!-- Wires as colored lines -->
+  <line x1="170" y1="117" x2="400" y2="130" stroke="#f1c40f" stroke-width="3"/>
+  <line x1="170" y1="182" x2="400" y2="150" stroke="#2ecc71" stroke-width="3"/>
+  <line x1="170" y1="242" x2="400" y2="170" stroke="#e67e22" stroke-width="3"/>
+  <line x1="170" y1="300" x2="400" y2="190" stroke="#e74c3c" stroke-width="3"/>
+
+  <!-- Relay bank right -->
+  <rect x="700" y="90" width="150" height="40" rx="5" fill="#c0392b"/>
+  <text x="775" y="115" class="c">Heater Relay</text>
+  <rect x="700" y="145" width="150" height="40" rx="5" fill="#2980b9"/>
+  <text x="775" y="170" class="c">Fan Relay</text>
+  <rect x="700" y="200" width="150" height="40" rx="5" fill="#8e44ad"/>
+  <text x="775" y="225" class="c">Turner Relay</text>
+  <rect x="700" y="255" width="150" height="40" rx="5" fill="#148f77"/>
+  <text x="775" y="280" class="c">Evap Relay</text>
+
+  <line x1="580" y1="145" x2="700" y2="110" stroke="#c0392b" stroke-width="3"/>
+  <line x1="580" y1="155" x2="700" y2="165" stroke="#2980b9" stroke-width="3"/>
+  <line x1="580" y1="165" x2="700" y2="220" stroke="#8e44ad" stroke-width="3"/>
+  <line x1="580" y1="175" x2="700" y2="275" stroke="#148f77" stroke-width="3"/>
+
+  <!-- Loads -->
+  <rect x="900" y="90" width="140" height="40" rx="5" fill="#922b21" stroke="#641e16"/>
+  <text x="970" y="115" class="c">Heater element</text>
+  <rect x="900" y="145" width="140" height="40" rx="5" fill="#1a5276"/>
+  <text x="970" y="170" class="c">Fan 12V</text>
+  <rect x="900" y="200" width="140" height="40" rx="5" fill="#6c3483"/>
+  <text x="970" y="225" class="c">Turner motor</text>
+  <rect x="900" y="255" width="140" height="40" rx="5" fill="#0e6655"/>
+  <text x="970" y="280" class="c">Evaporator</text>
+
+  <line x1="850" y1="110" x2="900" y2="110" stroke="#641e16" stroke-width="2"/>
+  <line x1="850" y1="165" x2="900" y2="165" stroke="#1a5276" stroke-width="2"/>
+  <line x1="850" y1="220" x2="900" y2="220" stroke="#6c3483" stroke-width="2"/>
+  <line x1="850" y1="275" x2="900" y2="275" stroke="#0e6655" stroke-width="2"/>
+
+  <!-- Power -->
+  <rect x="400" y="280" width="180" height="55" rx="6" fill="#f39c12"/>
+  <text x="490" y="305" class="c">PSU 5V / 12V</text>
+  <text x="490" y="322" class="c" font-size="9">GND common · isolate AC</text>
+
+  <!-- Color legend table -->
+  <rect x="40" y="360" width="1020" height="200" rx="8" fill="#ecf0f1" stroke="#bdc3c7"/>
+  <text x="60" y="390" class="l" font-weight="bold" font-size="13">Wire color recommendation</text>
+  <text x="60" y="415" class="n">Yellow     GPIO4  OneWire data (+ 4.7kΩ to 3.3V near sensor)</text>
+  <text x="60" y="435" class="n">Green      GPIO15 DHT22 data</text>
+  <text x="60" y="455" class="n">Orange     I²C SDA / SCL (pair twisted if long)</text>
+  <text x="60" y="475" class="n">Red        5V / 3.3V supply (label rails clearly)</text>
+  <text x="60" y="495" class="n">Black      GND (star or solid ground plane preferred)</text>
+  <text x="60" y="515" class="n">Brown      GPIO27 Heater relay IN</text>
+  <text x="60" y="535" class="n">Blue       GPIO13 Fan · Purple GPIO14 Turner · Teal GPIO12 Evaporator</text>
+
+  <text x="550" y="430" class="n" font-weight="bold">Safety checklist before first power-on</text>
+  <text x="550" y="450" class="n">1. Continuity: each GPIO to correct relay IN</text>
+  <text x="550" y="470" class="n">2. No short 3.3V↔GND or 5V↔GND</text>
+  <text x="550" y="490" class="n">3. Heater/AC only through rated relay contacts</text>
+  <text x="550" y="510" class="n">4. USB alone for firmware; external PSU for loads</text>
+  <text x="550" y="530" class="n">5. Pull-up on OneWire present and measured</text>
+
+  <rect x="40" y="580" width="1020" height="90" rx="6" fill="#fdedec" stroke="#e74c3c"/>
+  <text x="60" y="610" class="l" font-weight="bold" fill="#922b21">WARNING — Mains / high current</text>
+  <text x="60" y="632" class="n">Do not drive heater elements directly from ESP32 pins. Use properly rated relays or SSRs.</text>
+  <text x="60" y="652" class="n">Separate power domains; share GND only where required. Follow local electrical regulations.</text>
+
+  <text x="550" y="785" class="s" text-anchor="middle">ESP32 Egg Incubator v2.0 · Wiring Diagram · Bench assembly guide</text>
+</svg>

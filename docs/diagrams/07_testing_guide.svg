@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="720" viewBox="0 0 1000 720">
+  <defs>
+    <style>
+      .t { font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; fill: #1a1a2e; }
+      .h { font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; fill: #fff; }
+      .c { font-family: Arial, sans-serif; font-size: 11px; fill: #222; }
+      .s { font-family: Arial, sans-serif; font-size: 10px; fill: #555; }
+    </style>
+  </defs>
+  <rect width="1000" height="720" fill="#f8f9fa"/>
+  <rect x="15" y="15" width="970" height="690" rx="6" fill="#fff" stroke="#ced4da"/>
+
+  <text x="500" y="42" class="t" text-anchor="middle">ESP32 Egg Incubator — Testing Guide</text>
+  <text x="500" y="60" class="s" text-anchor="middle">Serial @ 115200 · Use STATUS / REPORT / FORECAST after each scenario</text>
+
+  <rect x="40" y="80" width="920" height="28" fill="#1a5276"/>
+  <text x="55" y="99" class="h">#</text>
+  <text x="90" y="99" class="h">Test</text>
+  <text x="280" y="99" class="h">Procedure</text>
+  <text x="620" y="99" class="h">Expected result</text>
+
+  <g font-family="Arial" font-size="11" fill="#222">
+    <rect x="40" y="108" width="920" height="40" fill="#eafaf1"/>
+    <text x="55" y="132">1</text>
+    <text x="90" y="125">Boot offline</text>
+    <text x="90" y="140" font-size="9" fill="#555">WiFi wrong / off</text>
+    <text x="280" y="132">Power on, open Serial</text>
+    <text x="620" y="125">Control runs; backoff msgs</text>
+    <text x="620" y="140" font-size="9" fill="#555">No hang / no WDT reset</text>
+
+    <text x="55" y="172">2</text>
+    <text x="90" y="165">Hysteresis</text>
+    <text x="90" y="180" font-size="9" fill="#555">Normal band</text>
+    <text x="280" y="172">Watch heater ON ≤37.2 OFF ≥37.8</text>
+    <text x="620" y="172">Matches TEMP_LOW / HIGH</text>
+
+    <rect x="40" y="188" width="920" height="40" fill="#fdedec"/>
+    <text x="55" y="212">3</text>
+    <text x="90" y="205">Emergency</text>
+    <text x="90" y="220" font-size="9" fill="#555">Safety critical</text>
+    <text x="280" y="212">Raise sensor ≥39.8°C</text>
+    <text x="620" y="205">EMERGENCY; heaters OFF</text>
+    <text x="620" y="220" font-size="9" fill="#555">Exit after ~10s stable or EXITEMG</text>
+
+    <text x="55" y="252">4</text>
+    <text x="90" y="245">Safe Mode</text>
+    <text x="90" y="260" font-size="9" fill="#555">Sensor loss</text>
+    <text x="280" y="252">Disconnect both DS18B20</text>
+    <text x="620" y="245">SAFE MODE; LED on</text>
+    <text x="620" y="260" font-size="9" fill="#555">Exit only RESET/EXITSAFE</text>
+
+    <rect x="40" y="268" width="920" height="40" fill="#eafaf1"/>
+    <text x="55" y="292">5</text>
+    <text x="90" y="285">Predictive</text>
+    <text x="90" y="300" font-size="9" fill="#555">After healthy run</text>
+    <text x="280" y="292">Fail sensors mid-run</text>
+    <text x="620" y="285">Predictive log; turner freeze</text>
+    <text x="620" y="300" font-size="9" fill="#555">Low conf → Safe if not EMG</text>
+
+    <text x="55" y="332">6</text>
+    <text x="90" y="325">Relay stuck</text>
+    <text x="90" y="340" font-size="9" fill="#555">Not in Safe/EMG</text>
+    <text x="280" y="332">High temp, heater SW off &gt;30s</text>
+    <text x="620" y="332">Safe Mode (stuck-on)</text>
+
+    <rect x="40" y="348" width="920" height="40" fill="#fef9e7"/>
+    <text x="55" y="372">7</text>
+    <text x="90" y="365">Serial REPORT</text>
+    <text x="280" y="372">Type REPORT</text>
+    <text x="620" y="365">Fan/Turner/Heater/Evap indices</text>
+    <text x="620" y="380" font-size="9" fill="#555">Health + DEGRADATION line</text>
+
+    <text x="55" y="412">8</text>
+    <text x="90" y="405">CLEARDIAG</text>
+    <text x="280" y="412">CLEARDIAG then CONFIRM &lt;5s</text>
+    <text x="620" y="412">Diagnostics wiped; REPORT clean</text>
+
+    <rect x="40" y="428" width="920" height="40" fill="#eafaf1"/>
+    <text x="55" y="452">9</text>
+    <text x="90" y="445">FORECAST</text>
+    <text x="280" y="452">≥3 cycles archived</text>
+    <text x="620" y="445">Slope + 95% CI or “no trend”</text>
+
+    <text x="55" y="492">10</text>
+    <text x="90" y="485">Email path</text>
+    <text x="90" y="500" font-size="9" fill="#555">Keep disabled first</text>
+    <text x="280" y="492">EMAIL_ENABLED=0 default</text>
+    <text x="620" y="492">No SMTP; enable only after WDT test</text>
+  </g>
+
+  <rect x="40" y="540" width="920" height="80" rx="6" fill="#e8f8f5" stroke="#1abc9c"/>
+  <text x="60" y="565" class="c" font-weight="bold">24-hour soak recommendation</text>
+  <text x="60" y="585" class="s">Log Serial periodically; issue REPORT / HEALTH every few hours; verify no unexpected resets (WDT/brownout counters).</text>
+  <text x="60" y="605" class="s">Confirm NVS timer and cycle_count survive power cycles.</text>
+
+  <text x="500" y="680" class="s" text-anchor="middle">ESP32 Egg Incubator v2.0 · Testing Guide · Pair with Serial commands in README</text>
+</svg>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs>
+    <style>
+      .t { font-family: Arial, sans-serif; font-size: 20px; font-weight: bold; fill: #1a1a2e; }
+      .s { font-family: Arial, sans-serif; font-size: 11px; fill: #444; }
+      .p { font-family: Arial, sans-serif; font-size: 10px; fill: #222; }
+      .g { font-family: Consolas, monospace; font-size: 10px; fill: #c0392b; font-weight: bold; }
+      .n { font-family: Arial, sans-serif; font-size: 9px; fill: #555; }
+    </style>
+    <marker id="arr" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto">
+      <path d="M0,0 L5,2.5 L0,5 Z" fill="#333"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="900" fill="#f8f9fa"/>
+  <rect x="15" y="15" width="1170" height="870" rx="6" fill="#fff" stroke="#ced4da"/>
+
+  <text x="600" y="45" class="t" text-anchor="middle">ESP32 Egg Incubator — Circuit Schematic (Logic Level)</text>
+  <text x="600" y="65" class="s" text-anchor="middle">GPIO map from Memory10_2.ino · Relays shown as coil + contact blocks · Not a full PCB netlist</text>
+
+  <!-- ESP32 chip block -->
+  <rect x="420" y="100" width="200" height="320" rx="8" fill="#ecf0f1" stroke="#2c3e50" stroke-width="2"/>
+  <text x="520" y="125" class="p" text-anchor="middle" font-weight="bold" font-size="14">ESP32 Dev Module</text>
+  <text x="520" y="145" class="n" text-anchor="middle">3.3V logic · USB for programming</text>
+
+  <!-- GPIO labels left -->
+  <text x="435" y="175" class="g">GPIO4</text>
+  <text x="500" y="175" class="n">OneWire DS18B20</text>
+  <text x="435" y="200" class="g">GPIO15</text>
+  <text x="500" y="200" class="n">DHT22 data</text>
+  <text x="435" y="225" class="g">GPIO5</text>
+  <text x="500" y="225" class="n">LED Sensor Fail</text>
+  <text x="435" y="250" class="g">GPIO13</text>
+  <text x="500" y="250" class="n">Fan relay IN</text>
+  <text x="435" y="275" class="g">GPIO14</text>
+  <text x="500" y="275" class="n">Turner relay IN</text>
+  <text x="435" y="300" class="g">GPIO27</text>
+  <text x="500" y="300" class="n">Heater relay IN</text>
+  <text x="435" y="325" class="g">GPIO12</text>
+  <text x="500" y="325" class="n">Evaporator relay IN</text>
+  <text x="435" y="355" class="g">SDA/SCL</text>
+  <text x="500" y="355" class="n">I²C → LCD 0x27</text>
+  <text x="435" y="385" class="n">3V3 · GND · VIN/USB</text>
+
+  <!-- DS18B20 -->
+  <rect x="40" y="130" width="140" height="100" rx="6" fill="#d6eaf8" stroke="#2980b9" stroke-width="1.5"/>
+  <text x="110" y="155" class="p" text-anchor="middle" font-weight="bold">DS18B20 ×2</text>
+  <text x="110" y="175" class="n" text-anchor="middle">OneWire bus</text>
+  <text x="110" y="195" class="n" text-anchor="middle">VDD—3.3V  GND—GND</text>
+  <text x="110" y="215" class="n" text-anchor="middle">DQ—GPIO4 + 4.7kΩ↑</text>
+  <line x1="180" y1="180" x2="418" y2="175" stroke="#2980b9" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="280" y="168" class="n">DATA + pull-up</text>
+
+  <!-- DHT22 -->
+  <rect x="40" y="250" width="140" height="80" rx="6" fill="#d5f5e3" stroke="#27ae60" stroke-width="1.5"/>
+  <text x="110" y="275" class="p" text-anchor="middle" font-weight="bold">DHT22</text>
+  <text x="110" y="295" class="n" text-anchor="middle">VCC 3.3/5V · DATA GPIO15</text>
+  <text x="110" y="315" class="n" text-anchor="middle">GND</text>
+  <line x1="180" y1="290" x2="418" y2="200" stroke="#27ae60" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- LED -->
+  <rect x="40" y="350" width="140" height="55" rx="6" fill="#fadbd8" stroke="#e74c3c" stroke-width="1.5"/>
+  <text x="110" y="375" class="p" text-anchor="middle" font-weight="bold">LED Fail</text>
+  <text x="110" y="393" class="n" text-anchor="middle">GPIO5 → R 220Ω → LED → GND</text>
+  <line x1="180" y1="375" x2="418" y2="225" stroke="#e74c3c" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- LCD -->
+  <rect x="40" y="430" width="140" height="70" rx="6" fill="#fdebd0" stroke="#e67e22" stroke-width="1.5"/>
+  <text x="110" y="455" class="p" text-anchor="middle" font-weight="bold">LCD 16×2 I²C</text>
+  <text x="110" y="473" class="n" text-anchor="middle">Addr 0x27</text>
+  <text x="110" y="490" class="n" text-anchor="middle">SDA SCL VCC GND</text>
+  <line x1="180" y1="460" x2="418" y2="355" stroke="#e67e22" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Relays / loads right side -->
+  <rect x="700" y="100" width="200" height="70" rx="6" fill="#f5b7b1" stroke="#c0392b" stroke-width="1.5"/>
+  <text x="800" y="125" class="p" text-anchor="middle" font-weight="bold">🔥 Heater Relay</text>
+  <text x="800" y="145" class="n" text-anchor="middle">IN ← GPIO27 · Load 12V/AC*</text>
+  <text x="800" y="160" class="n" text-anchor="middle">*Observe isolation &amp; rating</text>
+  <line x1="620" y1="300" x2="698" y2="135" stroke="#c0392b" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="700" y="185" width="200" height="55" rx="6" fill="#aed6f1" stroke="#2980b9" stroke-width="1.5"/>
+  <text x="800" y="210" class="p" text-anchor="middle" font-weight="bold">🌀 Fan Relay</text>
+  <text x="800" y="228" class="n" text-anchor="middle">IN ← GPIO13</text>
+  <line x1="620" y1="250" x2="698" y2="212" stroke="#2980b9" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="700" y="255" width="200" height="55" rx="6" fill="#d7bde2" stroke="#8e44ad" stroke-width="1.5"/>
+  <text x="800" y="280" class="p" text-anchor="middle" font-weight="bold">🔄 Turner Relay</text>
+  <text x="800" y="298" class="n" text-anchor="middle">IN ← GPIO14</text>
+  <line x1="620" y1="275" x2="698" y2="282" stroke="#8e44ad" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="700" y="325" width="200" height="55" rx="6" fill="#a3e4d7" stroke="#148f77" stroke-width="1.5"/>
+  <text x="800" y="350" class="p" text-anchor="middle" font-weight="bold">💧 Evaporator Relay</text>
+  <text x="800" y="368" class="n" text-anchor="middle">IN ← GPIO12</text>
+  <line x1="620" y1="325" x2="698" y2="352" stroke="#148f77" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Power rails -->
+  <rect x="950" y="100" width="200" height="180" rx="6" fill="#fcf3cf" stroke="#f39c12" stroke-width="1.5"/>
+  <text x="1050" y="125" class="p" text-anchor="middle" font-weight="bold">POWER</text>
+  <text x="1050" y="150" class="n" text-anchor="middle">USB 5V → ESP32 VIN</text>
+  <text x="1050" y="170" class="n" text-anchor="middle">3.3V from ESP LDO</text>
+  <text x="1050" y="195" class="n" text-anchor="middle">External 5V/12V for loads</text>
+  <text x="1050" y="215" class="n" text-anchor="middle">(separate from MCU rail)</text>
+  <text x="1050" y="240" class="n" text-anchor="middle">Common GND mandatory</text>
+  <text x="1050" y="260" class="n" text-anchor="middle">Decouple near ESP32</text>
+
+  <!-- Pull-up note -->
+  <rect x="40" y="530" width="460" height="100" rx="6" fill="#eaf2f8" stroke="#5dade2"/>
+  <text x="50" y="555" class="p" font-weight="bold">Critical discrete parts</text>
+  <text x="50" y="575" class="n">• R_pull 4.7 kΩ from DS18B20 DQ to 3.3V (required)</text>
+  <text x="50" y="592" class="n">• R_series ~220 Ω for LED on GPIO5</text>
+  <text x="50" y="609" class="n">• Relay modules: prefer optocoupled, active-HIGH matching setActuator()</text>
+  <text x="50" y="626" class="n">• Keep AC/high-current wiring away from OneWire and I²C</text>
+
+  <!-- Pin table -->
+  <rect x="520" y="530" width="630" height="200" rx="6" fill="#f4f6f7" stroke="#85929e"/>
+  <text x="535" y="555" class="p" font-weight="bold">GPIO summary (firmware)</text>
+  <text x="535" y="580" class="n">GPIO4  OneWire DS18B20 ×2     | GPIO15 DHT22</text>
+  <text x="535" y="598" class="n">GPIO5  LED sensor fail        | GPIO13 Fan</text>
+  <text x="535" y="616" class="n">GPIO14 Turner                 | GPIO27 Heater</text>
+  <text x="535" y="634" class="n">GPIO12 Evaporator             | I²C LCD 0x27</text>
+  <text x="535" y="660" class="n">Actuator indices: 0=Fan, 1=Turner, 2=Heater, 3=Evaporator</text>
+  <text x="535" y="680" class="n">Emergency raw ≥ 39.8°C · Critical ≥ 39.5°C · Target 37.7°C</text>
+  <text x="535" y="700" class="n">WDT 8 s · All high-power paths through relays only</text>
+  <text x="535" y="718" class="n">This diagram is logical; follow local electrical codes for mains loads.</text>
+
+  <text x="600" y="870" class="s" text-anchor="middle">ESP32 Egg Incubator v2.0 · Circuit Schematic · Documentation use</text>
+</svg>
