@@ -18,14 +18,6 @@
 **Target:** ESP32 Dev Module / compatible ESP32 boards  
 **Framework:** Arduino
 
-> [!IMPORTANT]
-> This is a prototype firmware project for engineering and educational use. It
-> is **not** a certified medical, agricultural, life-support, or commercial
-> incubation product. Reliable incubation still requires suitable insulation,
-> calibrated sensors, electrical protection, ventilation, biosecurity, and
-> supervised hardware testing.
-
----
 
 ## ✨ Why this project stands out
 
