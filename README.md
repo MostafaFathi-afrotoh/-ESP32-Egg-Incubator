@@ -1,414 +1,473 @@
-# 🥚 ESP32 Egg Incubator Controller – Professional Version
+# 🥚 ESP32 Egg Incubator Controller
 
-**Safety-critical, offline-first firmware for egg incubation on ESP32 (Arduino framework).**  
-Hysteresis temperature control, multi-layer safety modes, predictive thermal fallback, dual-blob diagnostics, cycle learning, and optional cloud alerts — without ever depending on the network to keep eggs alive.
+### Safety-first • Offline-first • Evidence-driven ESP32 firmware for biological incubation
+
+[![Platform](https://img.shields.io/badge/Platform-ESP32-blue?logo=espressif)](https://www.espressif.com/)
+[![Framework](https://img.shields.io/badge/Framework-Arduino-00979D?logo=arduino)](https://www.arduino.cc/)
+[![Language](https://img.shields.io/badge/Language-C%2B%2B-orange?logo=c%2B%2B)](https://isocpp.org/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+[![Architecture](https://img.shields.io/badge/Architecture-Offline--first-6f42c1)](docs/ARCHITECTURE.md)
+
+> **A complete embedded-systems project—not just a temperature thermostat.**
+> This repository combines closed-loop thermal control, fail-safe states, sensor
+> validation, persistent diagnostics, predictive fallback, cycle learning,
+> remote observability, hardware documentation, and operational evidence.
 
 **Author:** Mustafa Fathy Abdeltawab Youssef  
-**Version:** 2.0.1  
-**Platform:** ESP32 (Arduino framework)
+**Firmware:** `v2.0.1`  
+**Target:** ESP32 Dev Module / compatible ESP32 boards  
+**Framework:** Arduino
 
-[![Platform](https://img.shields.io/badge/Platform-ESP32-blue)](https://www.espressif.com/)
-[![Framework](https://img.shields.io/badge/Framework-Arduino-00979D)](https://www.arduino.cc/)
-[![Language](https://img.shields.io/badge/Language-C%2B%2B-orange)](https://isocpp.org/)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
-
----
-
-## 📑 Table of Contents
-
-- [Introduction](#-introduction)
-- [Features](#-features)
-- [Hardware & Pin Mapping](#-hardware--pin-mapping)
-- [System Flow](#-system-flow)
-- [Installation & Setup](#-installation--setup)
-- [Usage & Serial Commands](#-usage--serial-commands)
-- [Software Architecture](#-software-architecture)
-- [Diagrams](#-diagrams)
-- [Customization](#-customization)
-- [Important Notes & Warnings](#-important-notes--warnings)
-- [Testing](#-testing)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Acknowledgments](#-acknowledgments)
-- [Contact & Support](#-contact--support)
+> [!IMPORTANT]
+> This is a prototype firmware project for engineering and educational use. It
+> is **not** a certified medical, agricultural, life-support, or commercial
+> incubation product. Reliable incubation still requires suitable insulation,
+> calibrated sensors, electrical protection, ventilation, biosecurity, and
+> supervised hardware testing.
 
 ---
 
-## 📖 Introduction
+## ✨ Why this project stands out
 
-An **egg incubator** must hold temperature near **37.7 °C** for days, turn eggs on a schedule, and manage humidity — while surviving sensor failures, power glitches, and operator mistakes.
+Most incubator controllers stop at `if (temperature < target) heaterOn()`. This
+project treats incubation as a **long-running, failure-prone cyber-physical
+system**:
 
-This project is a **professional ESP32 controller** built with safety-critical and reliability-engineering practices:
+- The control and safety path continues to operate when Wi-Fi is unavailable.
+- Raw temperature is reserved for emergency decisions; an EMA-smoothed value is
+  used for normal hysteresis control.
+- Sensor loss does not immediately turn into an uncontrolled guess: the
+  predictive model estimates temperature while its confidence decays, then
+  escalates to Safe Mode when confidence is no longer trustworthy.
+- Persistent diagnostics survive reboot using dual NVS blocks and CRC16.
+- A health score, fault ring, reset statistics, cycle archive, trend analysis,
+  and evidence folder make the system observable and reviewable.
+- The design includes explicit behaviour for Safe Mode, Emergency Mode, relay
+  faults, humidity-sensor loss, watchdog resets, and offline operation.
 
-| Problem | How this firmware addresses it |
-|--------|--------------------------------|
-| Overheating kills embryos | Hard emergency cutoff at **39.8 °C**, critical cutoff at **39.5 °C**, hysteresis control |
-| Sensor loss | **Predictive thermal model** estimates temperature; then **Safe Mode** if confidence collapses |
-| Silent hardware faults | **Relay stuck-on detection**, fault ring, health score |
-| Lost history after reboot | **Dual-blob NVS storage** with **CRC16** |
-| Long-term degradation | **Cycle archive** (last 10 cycles) + linear regression **FORECAST** with ~95 % CI |
-| Remote monitoring | Optional **Adafruit IO**, **Telegram** (debounced), crash **email** (off by default) |
+## 🧭 System at a glance
 
-**Design principle:** *network is optional*. Control, safety, and diagnostics always run offline. Cloud and messaging never block the heater loop.
+```mermaid
+flowchart LR
+    DS[2× DS18B20\nGPIO 4 OneWire] --> V[Sensor validation\nrange + jump checks]
+    DHT[DHT22\nGPIO 15] --> V
+    V --> C[ESP32 control loop\n2 s sensor task]
+    C --> H[Heater\nGPIO 27]
+    C --> T[Turner\nGPIO 14]
+    C --> F[Fan\nGPIO 13]
+    C --> E[Evaporator\nGPIO 12]
+    V --> D[Diagnostics\nWelford + health + faults]
+    D --> N[(NVS\ndual blob + CRC16)]
+    D --> A[Cycle archive\nlast 10 cycles]
+    C --> S[Safety FSM\nNORMAL / SAFE / EMERGENCY]
+    S --> H
+    D --> W[Wi-Fi / Adafruit IO\noptional, rate-limited]
+    D --> G[Telegram alerts\noptional, debounced]
+    C --> L[LCD 16×2\nI²C 0x27]
+```
 
-**Version:** v2.0 (final production-oriented release)  
-**Main sketch:** `ESP32_Incubator.ino`
+### Control-loop timing
 
----
+| Task | Implemented behaviour |
+|---|---|
+| Watchdog servicing | First operation in `loop()` and around background operations |
+| Sensor/control task | Every `2,000 ms` |
+| Diagnostics periodic task | Every `10,000 ms` |
+| Cloud/Telegram background task | Every `100 ms` |
+| Telegram command polling | Every `3,000 ms` when Wi-Fi is connected |
+| Cycle duration | `86,400 s` (24 hours) |
 
-## ✨ Features
-
-### ⚙️ Core control
-
-- **Heater** — hysteresis around `TEMP_TARGET` (37.7 °C): ON ≤ 37.2 °C, OFF ≥ 37.8 °C (via `TEMP_LOW` / `TEMP_HIGH`)
-- **Turner** — timed cycle (default 60 s OFF / 15 s ON); **frozen** while predictive mode is active
-- **Fan** — always ON in normal and safety modes
-- **Evaporator** — humidity-based control (≈45–55 %); timed safe cycle if DHT is lost
-- **EMA temperature smoothing** on control path; **raw** temperature used for emergency decisions
-
-### 🚨 Safety
-
-- **Safe Mode** — sensors failed or relay stuck; heaters forced OFF; exit only via `RESET` / `EXITSAFE`
-- **Emergency Mode** — raw temp ≥ **39.8 °C**; requires ~**10 s** stable below exit threshold before auto-exit
-- **Relay stuck-on** — heater software OFF but temp stays high for 30 s → Safe Mode
-- **Watchdog (WDT)** — 8 s task WDT with panic; fed in `loop()` and during short waits
-- **GPIO absolute cutoff** — actuators driven to safe states on mode entry
-
-### 📊 Diagnostics & intelligence
-
-- **Health Score** (0–100) — weighted thermal, overshoot, sensors, heater, software, actuators
-- **Welford** online mean/variance, band time, overshoot histogram / P95, sensor delta
-- **Fault ring** (32 events) with severity levels
-- **Predictive model** — adaptive heat/cool rates; confidence decay; clamp 20–42 °C; does not enter Safe Mode if Emergency is already active
-- **Cycle archive** — last **10** cycles in NVS; duty/overshoot **per cycle** (not lifetime cumulative)
-- **Degradation detection** — daily health ring (30 days, circular) + slope vs `DEGRADATION_THRESHOLD`
-- **FORECAST** — linear regression to health = 70 with approximate **95 % CI**
-
-### 📡 Monitoring & alerts
-
-- Serial: `REPORT`, `STATUS`, `HEALTH`, `DIAG`, `FAULTS`, `FORECAST`, …
-- **Telegram** — multi-code debounce (~1 h), sanitized JSON text, daily health summary
-- **Adafruit IO** — rate-limited feeds (health/temp ~5 min; overshoot/delta/duty ~30 min)
-- **Email crash report** — disabled by default (`EMAIL_ENABLED 0`); WDT-protected send; mark sent only on success
-
-### 🛡️ Reliability
-
-- **Dual-blob** diagnostics (`diag_blk_a` / `diag_blk_b`) + **CRC16**
-- WiFi **exponential backoff** (1 min → up to 1 h); continues offline if WiFi fails
-- No `String` on critical paths; static buffers; short network timeouts (HTTP ≤ 2.5 s)
-- Core dump flags in `build_opt.h` for post-crash analysis
+The main loop keeps sensing, safety, actuator control, and diagnostics separate
+from best-effort network work. Network loss changes observability—not the
+incubation control decision.
 
 ---
 
-## 🔌 Hardware & Pin Mapping
+## 🧠 Engineering highlights
 
-| Component | GPIO | Type | Description |
-|-----------|------|------|-------------|
-| DS18B20 (OneWire bus) | **4** | Digital | 2× temperature sensors on one bus |
-| DHT22 | **15** | Digital | Humidity + backup temperature |
-| Fan | **13** | OUT | Circulation / cooling |
-| Turner | **14** | OUT | Egg turner motor |
-| Heater | **27** | OUT | Heating element (via relay) |
-| Evaporator | **12** | OUT | Humidifier / evaporator |
-| LED Sensor Fail | **5** | OUT | All DS18B20 failed |
-| LCD 16×2 (I2C) | SDA/SCL | I2C **0x27** | Status display |
+### 1. Temperature control with hysteresis
 
-**Notes**
+The runtime defaults loaded into `SystemConfig` are:
 
-- Use suitable **relays** (optocoupled recommended) for heater/turner/fan/evaporator loads.
-- DS18B20: 4.7 kΩ pull-up on the data line to 3.3 V.
-- Confirm LCD address (`0x27` common; some modules use `0x3F`).
+- Target: **37.7 °C**
+- Heater ON threshold: **37.4 °C** (`target − 0.3`)
+- Heater OFF threshold: **37.8 °C** (`target + 0.1`)
+- Critical cutoff: **39.5 °C**
+- Emergency entry: **39.8 °C**
+- Emergency exit stability window: **10 s** below the configured high threshold
+
+The heater decision uses `currentTemperature`, the EMA-smoothed value. Emergency
+and critical checks use `rawTemperature`, reducing the risk that smoothing hides
+a dangerous spike. The heater is also monitored for excessive runtime and
+software-OFF/high-temperature relay-stuck behaviour.
+
+### 2. Explicit safety state machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> BOOT
+    BOOT --> NORMAL: initialization complete
+    NORMAL --> SAFE: sensor failure / relay stuck-on / predictive confidence lost
+    NORMAL --> EMERGENCY: raw temperature >= emergency threshold
+    EMERGENCY --> NORMAL: stable recovery or EXITEMG/RESET
+    SAFE --> NORMAL: EXITSAFE/RESET after inspection
+    SAFE --> EMERGENCY: dangerous temperature detected
+
+    state SAFE {
+        [*] --> HeaterOff
+        HeaterOff: Heater forced OFF
+        HeaterOff: Fan ON
+        HeaterOff: Turner OFF
+    }
+    state EMERGENCY {
+        [*] --> EmergencyCutoff
+        EmergencyCutoff: Heater OFF, Turner OFF, Evaporator OFF
+        EmergencyCutoff: Fan ON
+    }
+```
+
+| State | Heater | Turner | Fan | Evaporator | Purpose |
+|---|---:|---:|---:|---:|---|
+| `NORMAL` | Controlled | Timed | ON | Humidity-controlled | Regular incubation |
+| `SAFE` | Forced OFF | OFF | ON | Safe timed fallback | Protect hardware/biological load after a fault |
+| `EMERGENCY` | Forced OFF | OFF | ON | OFF | Remove heat and isolate outputs |
+
+### 3. Sensor resilience
+
+- Up to **2 DS18B20** devices share the OneWire bus.
+- Temperature readings are checked for plausibility (`0–50 °C`) and jumps
+  larger than `5 °C`.
+- DS18B20 conversion handling has a `750 ms` timeout.
+- The DHT22 is sampled for humidity and backup temperature.
+- After **3** consecutive DHT failures, a sensor is bypassed for **60 s** before
+  retrying; `RESETDHT` provides a manual reinitialization path.
+- A dedicated sensor-failure LED is driven on GPIO **5** when all DS18B20 sensors
+  are invalid.
+
+### 4. Predictive thermal fallback
+
+`predictive_model.cpp` is observation-only while sensors are healthy. It learns
+heat/cool rates from recent valid readings, then estimates temperature when
+sensor data is lost. The estimate is clamped to **20–42 °C** and confidence
+starts at **100%**, decaying by **0.5 percentage points per minute** while the
+model remains active. If confidence falls below **60%**, or the estimate rises
+above **39 °C**, the model escalates to Safe Mode unless Emergency Mode is
+already active.
+
+The turner is frozen during predictive mode. When valid sensors recover, the
+predictive state is cleared and confidence is reset.
+
+### 5. Diagnostics as a reliability layer
+
+The diagnostics module maintains:
+
+- A **0–100 health score** built from thermal behaviour, overshoot, sensors,
+  heater, software resets, and actuator behaviour.
+- Welford online statistics for mean and variance without storing every sample.
+- Temperature histogram and overshoot histogram data, including P95 helpers.
+- Time-in-band measurements, sensor-to-sensor delta, duty cycle, heater cycles,
+  switching counts, and runtime counters.
+- A **32-entry fault ring** with info, warning, critical, and emergency levels.
+- Detailed reset logs with reset reason, uptime, value, and fault code.
+- A **30-day circular health/degradation history** with a configurable slope
+  threshold (`-0.5`).
+- Dual diagnostic NVS blobs with CRC16 validation for reboot resilience.
+
+### 6. Cycle archive and forecast
+
+At each completed 24-hour cycle, the firmware archives cycle number, health,
+average temperature, duty cycle, overshoot, and completion timestamp. The
+archive stores the last **10** records in NVS. `FORECAST` performs a linear
+regression and reports an approximate projection toward health **70** when at
+least **3** archived cycles are available.
+
+### 7. Observability without compromising control
+
+- Adafruit IO publishing is optional and rate-limited: fast feeds every **5 min**
+  and slow feeds every **30 min**.
+- Wi-Fi reconnect backoff starts at **1 min** and grows to a maximum of **1 hour**.
+- Telegram alerts use debouncing and periodic monitoring controls.
+- HTTP timeout is configured to **1,000 ms** in the cloud I/O module.
+- `secrets.h` is intentionally excluded; only `secrets.h.example` belongs in a
+  public checkout.
 
 ---
 
-## 🔄 System Flow
+## 🔌 Hardware and pin mapping
+
+| Component | GPIO / interface | Role |
+|---|---:|---|
+| DS18B20 ×2 | GPIO **4** | Primary temperature sensing on OneWire |
+| DHT22 | GPIO **15** | Humidity + backup temperature |
+| Fan | GPIO **13** | Circulation / cooling; forced ON in safety states |
+| Turner | GPIO **14** | Egg-turning motor |
+| Heater relay | GPIO **27** | Heating element control |
+| Evaporator / humidifier | GPIO **12** | Humidity control |
+| Sensor-failure LED | GPIO **5** | All DS18B20 sensors invalid |
+| LCD 16×2 | I²C, address **0x27** | Local status display |
+
+> **Electrical safety:** relay modules, heaters, motors, fuses, grounding,
+> isolation, flyback protection, wire gauge, and mains work must be designed and
+> verified by qualified practice. Never connect mains voltage directly to an
+> ESP32 GPIO.
+
+### Default operating parameters
+
+| Parameter | Default |
+|---|---:|
+| Temperature target | 37.7 °C |
+| Heater ON / OFF | 37.4 °C / 37.8 °C |
+| Critical cutoff | 39.5 °C |
+| Emergency cutoff | 39.8 °C |
+| Turner OFF / ON interval | 60 s / 15 s |
+| Maximum heater runtime warning | 30 s |
+| Sensor sampling | 2 s |
+| NVS timer save interval | 60 s |
+| Humidity control band | ON below 45%; OFF above 55% |
+| DHT retry interval after bypass | 60 s |
+| Cycle duration | 24 h |
+| Task WDT configuration | 30 s |
+
+These are software defaults, not a substitute for calibration or species-
+specific incubation protocols.
+
+---
+
+## 🛠️ Installation
+
+### Requirements
+
+- Arduino IDE 2.x (or Arduino IDE 1.8+)
+- ESP32 board package
+- ESP32 Dev Module or compatible board
+- USB cable and a suitable regulated power supply
+
+### Libraries
+
+Install through Arduino Library Manager:
+
+- DHT sensor library by Adafruit
+- Adafruit Unified Sensor
+- OneWire
+- DallasTemperature
+- LiquidCrystal I2C
+- UniversalTelegramBot *(optional cloud alerting)*
+- ArduinoJson *(dependency of UniversalTelegramBot)*
+
+### Build and flash
+
+1. Clone or download this repository.
+2. Copy `secrets.h.example` to `secrets.h`.
+3. Fill only the local credentials needed for Wi-Fi, Telegram, and Adafruit IO.
+4. Open `ESP32_Incubator.ino` in Arduino IDE. Keep the sketch and folder names
+   compatible with Arduino's `.ino` project rules.
+5. Select **ESP32 Dev Module**, the correct port, and upload.
+6. Open Serial Monitor at **115200 baud**.
+7. Type `VERSION`, then `SHOW_CONFIG`, then `STATUS` to confirm startup.
+
+> Never commit `secrets.h`, real tokens, passwords, or API keys. Cloud features
+> are optional; the controller is intended to remain functional offline.
+
+---
+
+## 🖥️ Serial command reference
+
+Commands are handled case-insensitively where implemented in the main sketch.
+
+| Command | Function |
+|---|---|
+| `HELP` / `?` | Print the complete command list |
+| `STATUS` | Live temperature, actuator, mode, cycle, and sensor validity |
+| `REPORT` | Full reliability and diagnostic report |
+| `HEALTH` | Short health summary |
+| `DIAG` | Internal diagnostic counters and state |
+| `FAULTS` | Print recent fault-ring events |
+| `FORECAST` | Project health degradation; requires at least 3 archived cycles |
+| `HEAP` | Free heap and minimum-ever free heap |
+| `VERSION` | Firmware, chip model/revision, and CPU frequency |
+| `SHOW_CONFIG` | Print dynamic NVS-backed thresholds and timing |
+| `SET_TEMP <°C>` | Set target; accepted range 30–42 °C |
+| `SET_CRITICAL <°C>` | Set critical cutoff; accepted range 38–45 °C |
+| `SET_EMERGENCY <°C>` | Set emergency cutoff; must be above critical and 38–45 °C |
+| `SET_TURNER_ON <s>` | Set turner ON time; accepted range 5–60 s |
+| `SET_TURNER_OFF <s>` | Set turner OFF time; accepted range 30–600 s |
+| `RESET` | Reset 24-hour timer and clear Safe/Emergency state |
+| `EXITSAFE` | Clear Safe Mode only |
+| `EXITEMG` | Clear Emergency Mode only |
+| `RESETDHT` | Reinitialize humidity sensor(s) |
+| `CLEARDIAG` | Request diagnostic erase; requires `CONFIRM` within 5 s |
+| `MONITORON` | Enable periodic Telegram monitoring |
+| `MONITOROFF` | Disable periodic Telegram monitoring |
+| `TESTTG` | Send a test Telegram fault notification |
+| `PUBLISH` | Publish all configured cloud feeds immediately |
+
+> Safety note: commands that clear a safety state should only be used after the
+> physical cause has been inspected and the sensors/actuators are known to be
+> safe.
+
+---
+
+## 🗂️ Software architecture
+
+| Module | Responsibility |
+|---|---|
+| `ESP32_Incubator.ino` | Main loop, sensors, actuator control, FSM, timer, LCD, Serial |
+| `diagnostics.cpp/.h` | Health score, Welford statistics, NVS persistence, faults, reports |
+| `predictive_model.cpp/.h` | Sensor-loss thermal estimate and confidence management |
+| `cycle_archive.cpp/.h` | Last-10-cycle archive, comparison, and forecast |
+| `diag_io.cpp/.h` | Wi-Fi reconnect, Adafruit IO, JSON payloads, module orchestration |
+| `telegram_alerts.cpp/.h` | Debounced alerts, monitoring, reset reports, Telegram commands |
+| `build_opt.h` | ESP32 ELF core-dump build flags |
+| `secrets.h.example` | Public credential template; copy locally to `secrets.h` |
+
+```mermaid
+sequenceDiagram
+    participant L as loop()
+    participant S as Sensors
+    participant C as Control + Safety
+    participant D as Diagnostics
+    participant I as diag_io / Telegram
+    participant N as NVS
+
+    loop continuously
+        L->>L: service watchdog
+        L->>S: sample every 2 s
+        S->>C: validated raw + smoothed values
+        C->>C: apply hysteresis / safety FSM
+        C->>D: record samples, faults, actuator events
+        L->>D: periodic report work every 10 s
+        L->>I: non-critical background work every 100 ms
+        D->>N: persist timer, diagnostics, archive
+    end
+```
+
+---
+
+## 🧪 Testing and evidence
+
+The repository includes an engineering test guide and operational evidence rather
+than claiming that a formal certification test suite has been completed.
+
+### Recommended hardware test matrix
+
+| Scenario | Expected result |
+|---|---|
+| Normal temperature regulation | Heater follows hysteresis; fan remains ON |
+| Raw temperature ≥ critical | Heater is forced OFF |
+| Raw temperature ≥ emergency | Emergency Mode; heater/turner/evaporator OFF; fan ON |
+| Sensor disconnect | Validation detects loss; predictive path engages; escalation is safe |
+| Predictive confidence decay | Confidence decreases; Safe Mode is entered below the trust limit |
+| Relay stuck-on simulation | 30 s high-temperature condition leads to Safe Mode |
+| DHT failure | Three failures trigger bypass; retry occurs after 60 s |
+| Wi-Fi unavailable | Control loop and safety continue offline |
+| Watchdog stress | WDT is serviced; reset reason is recorded if a reset occurs |
+| NVS reboot recovery | Timer, safety state, diagnostics, and archive recover correctly |
+| `CLEARDIAG` | Data is erased only after the 5-second `CONFIRM` handshake |
+| `FORECAST` | Insufficient-data message below 3 cycles; forecast after enough data |
+
+### Included evidence
+
+- Telegram diagnostic screenshots: `docs/evidence/telegram/`
+- Adafruit IO dashboards and feed screenshots: `docs/evidence/adafruit/`
+- Export samples: `docs/evidence/samples/`
+  - `temperature-avg_sample.csv`
+  - `health-score_sample.csv`
+  - `duty-cycle_sample.csv`
+
+The evidence is from a working breadboard/prototype context and should be read
+as operational demonstration—not certification or proof of unattended
+commercial production reliability.
+
+---
+
+## 🖼️ Documentation assets
+
+### Engineering diagrams — [`docs/diagrams/`](docs/diagrams/)
+
+- [`01_system_block_diagram.svg`](docs/diagrams/01_system_block_diagram.svg)
+- [`01b_system_block_diagram_v2.svg`](docs/diagrams/01b_system_block_diagram_v2.svg)
+- [`02_circuit_schematic.svg`](docs/diagrams/02_circuit_schematic.svg)
+- [`02b_circuit_schematic_v2.svg`](docs/diagrams/02b_circuit_schematic_v2.svg)
+- [`03_wiring_diagram.svg`](docs/diagrams/03_wiring_diagram.svg)
+- [`04_pcb_layout_guide.svg`](docs/diagrams/04_pcb_layout_guide.svg)
+- [`05_enclosure_design.svg`](docs/diagrams/05_enclosure_design.svg)
+- [`06_bom.svg`](docs/diagrams/06_bom.svg)
+- [`07_testing_guide.svg`](docs/diagrams/07_testing_guide.svg)
+- [`08_control_flowchart.svg`](docs/diagrams/08_control_flowchart.svg)
+- [`09_temperature_profile.svg`](docs/diagrams/09_temperature_profile.svg)
+- [`10_health_score_over_time.svg`](docs/diagrams/10_health_score_over_time.svg)
+
+See [`docs/diagrams/README.md`](docs/diagrams/README.md) for usage notes.
+
+### Prototype and operational photos
+
+- [`01_prototype_overview_running.jpg`](docs/photos/01_prototype_overview_running.jpg)
+- [`02_lcd_relays_running.jpg`](docs/photos/02_lcd_relays_running.jpg)
+- [`03_lcd_humidity_control.jpg`](docs/photos/03_lcd_humidity_control.jpg)
+- [`04_full_assembly_cardboard_enclosure.jpg`](docs/photos/04_full_assembly_cardboard_enclosure.jpg)
+- [`05_esp32_breadboard_closeup.jpg`](docs/photos/05_esp32_breadboard_closeup.jpg)
+
+---
+
+## 📁 Repository map
 
 ```text
-setup()
-  ├─ WDT (8 s)
-  ├─ Pins + sensors + LCD
-  ├─ Restore NVS (timer, safe/emergency flags)
-  ├─ diag_init()          → dual-blob load, fault ring, cycle baseline
-  ├─ diag_io_init()       → WiFi attempt, telegram, predictive, cycle archive
-  └─ email_reporter_*     → optional crash mail (if EMAIL_ENABLED)
-
-loop()  [WDT reset every pass]
-  ├─ Fan always ON
-  ├─ Turner cycle (skipped if predictive active)
-  ├─ Timer / cycle complete → archive + diag_cycleReset()
-  ├─ Serial commands
-  ├─ Every ~2 s:
-  │     readSensors → controlHeater → controlEvaporator
-  │     checkRelayStuck → diag_sample → LCD
-  ├─ Every ~10 s:  diag_periodic()
-  └─ Every ~100 ms: diag_io_loop()  → WiFi/AIO + Telegram + predictive
+.
+├── ESP32_Incubator.ino
+├── diagnostics.cpp / diagnostics.h
+├── diag_io.cpp / diag_io.h
+├── predictive_model.cpp / predictive_model.h
+├── cycle_archive.cpp / cycle_archive.h
+├── telegram_alerts.cpp / telegram_alerts.h
+├── build_opt.h
+├── secrets.h.example
+├── INSTALL.txt
+├── IMPROVEMENTS.md
+├── CONTRIBUTING.md
+├── LICENSE
+└── docs/
+    ├── ARCHITECTURE.md
+    ├── diagrams/        # system, circuit, wiring, enclosure, BOM, tests
+    └── evidence/        # Telegram, Adafruit IO, CSV samples
 ```
 
-Control and safety never wait on the network.
+The public repository tree currently contains no committed `secrets.h`, no
+committed email reporter module, and no automated unit-test directory. Those
+limitations are intentionally not hidden: hardware tests and reproducible
+validation should be expanded as the project moves beyond prototype status.
 
 ---
 
-## 🚀 Installation & Setup
+## 🔐 Safety, security, and design boundaries
 
-### Prerequisites
-
-- **Board:** ESP32 Dev Module (or compatible)
-- **IDE:** Arduino IDE 2.x **or** PlatformIO
-- **Libraries** (Library Manager / PlatformIO):
-
-| Library | Typical source |
-|---------|----------------|
-| DHT sensor library | Adafruit |
-| OneWire | Paul Stoffregen |
-| DallasTemperature | Miles Burton |
-| LiquidCrystal_I2C | (common forks; match your LCD) |
-| EMailSender | xreef (only if you enable email) |
-
-Built-in: `WiFi`, `HTTPClient`, `Preferences`, `esp_task_wdt`, `Wire`.
-
-### Steps
-
-1. **Clone / copy** the project into a single Arduino sketch folder.  
-   Keep **one** main `.ino` only (`ESP32_Incubator.ino`). Do not mix older `Memory5` / `Memory9` sketches in the same folder.
-
-2. **Secrets**
-   ```bash
-   cp secrets.h.example secrets.h
-   ```
-   Edit `secrets.h` with your WiFi, Adafruit IO, Telegram, and optional email values.  
-   **Never commit `secrets.h`.** Add it to `.gitignore`.
-
-3. **Wire hardware** according to the pin table above.
-
-4. **Install libraries** listed above.
-
-5. **Board settings:** ESP32 Dev Module, upload speed as needed, serial **115200**.
-
-6. **Upload**, then open **Serial Monitor @ 115200**.
-
-7. Optional: place `build_opt.h` so the build system applies core-dump defines (Arduino: sketch folder / build options as documented for your toolchain).
-
----
-
-## 💻 Usage & Serial Commands
-
-Type a command and press **Enter** (newline). Commands are case-insensitive where both forms are listed in firmware.
-
-| Command | Description |
-|---------|-------------|
-| `STATUS` | Live status: temps, heater/turner, Safe/Emergency, cycle |
-| `REPORT` | Full reliability report (health, thermal, faults, degradation) |
-| `HEALTH` | Short health line |
-| `DIAG` | Internal diagnostics counters |
-| `FAULTS` | Last fault-ring events |
-| `FORECAST` | Project cycles until health ≈ 70 (needs ≥ 3 archived cycles) |
-| `RESET` | Reset cycle timer; clear Safe and Emergency |
-| `EXITSAFE` | Exit Safe Mode only |
-| `EXITEMG` | Exit Emergency Mode only |
-| `CLEARDIAG` | Erase diagnostics NVS — then type **`CONFIRM`** within 5 s |
-| `RESETDHT` | Re-`begin()` humidity sensor(s) without heap churn |
-
-Example after boot:
-
-```text
-Boot #3
-System Starting...
-✅ System Ready!
-📡 diag_io_init: attempting WiFi (max 5 s)...
-🧠 Predictive model ready
-📚 Cycle archive loaded: 0 records
-T1: 37.51 | T2: 37.48 | Avg: 37.5 | ...
-```
-
----
-
-## 🗂️ Software Architecture
-
-| File | Role |
-|------|------|
-| `ESP32_Incubator.ino` | Main loop, sensors, heater/turner/fan/evaporator, Safe/Emergency, serial |
-| `diagnostics.h` / `.cpp` | Health score, Welford, dual-blob, fault ring, day degradation, cycle baselines |
-| `diag_io.h` / `.cpp` | Non-blocking WiFi, Adafruit IO, ties telegram + predictive + archive |
-| `predictive_model.h` / `.cpp` | Open-loop thermal estimate on sensor loss |
-| `cycle_archive.h` / `.cpp` | Last 10 cycles, compare, FORECAST + CI |
-| `telegram_alerts.h` / `.cpp` | Debounced Telegram alerts |
-| `email_reporter.h` / `.cpp` | Optional crash email (EMailSender) |
-| `email_config.h` | Email enable flag and non-secret settings |
-| `secrets.h` / `secrets.h.example` | Credentials (local only) |
-| `build_opt.h` | Core dump compiler flags |
-
-**Shared structs** (`Actuator`, `HumiditySensor`, `DSTemperatureSensor`) live in **`diagnostics.h`** only.
-
-**Actuator indices** (must stay consistent with REPORT):
-
-```text
-0 = Fan, 1 = Turner, 2 = Heater, 3 = Evaporator
-```
-
----
-
-## 🔧 Customization
-
-### Temperature thresholds (`ESP32_Incubator.ino`)
-
-```cpp
-#define TEMP_TARGET     37.7
-#define TEMP_LOW        (TEMP_TARGET - 0.3)   // heater ON
-#define TEMP_HIGH       (TEMP_TARGET + 0.1)   // heater OFF
-#define TEMP_CRITICAL   39.5
-#define TEMP_EMERGENCY  39.8
-```
-
-`TEMP_ABSOLUTE_MAX` is tied to `TEMP_EMERGENCY` (single source).
-
-### Turner timing
-
-```cpp
-#define TURNER_OFF_TIME  60000   // ms
-#define TURNER_ON_TIME   15000
-```
-
-### Health penalties & degradation (`diagnostics.h`)
-
-```cpp
-#define PENALTY_MEAN_DEV_HIGH   15.0f
-// ... other PENALTY_* ...
-#define DEGRADATION_THRESHOLD  (-0.5f)   // health points per day
-```
-
-### Email
-
-In `email_config.h`:
-
-```cpp
-#define EMAIL_ENABLED  0   // set to 1 only after field SMTP + WDT test
-```
-
-Credentials come only from `secrets.h`.
-
-### Adafruit feeds
-
-Create feeds matching the names used in `diag_io.cpp` (e.g. `health-score`, `temperature-avg`, `overshoot-p95`, `sensor-delta`, `duty-cycle`) under your Adafruit IO username.
-
----
-
-## ⚠️ Important Notes & Warnings
-
-1. **Watchdog** — Do not add long blocking `delay()` in control paths. Existing waits call `esp_task_wdt_reset()`.
-2. **Email is OFF by default** — SMTP can block longer than the WDT if the library ignores timeouts. Test on hardware before `EMAIL_ENABLED 1`.
-3. **Secrets** — Only in `secrets.h`; never hardcode WiFi/tokens in `.cpp` files.
-4. **Safe Mode** does **not** auto-exit after “stable readings”; use `RESET` or `EXITSAFE` (by design).
-5. **Offline first** — Missing WiFi does not stop incubation control.
-6. **One sketch folder** — Multiple main `.ino` files in one project cause confusing link errors.
-7. This firmware is **not** a substitute for proper incubator hardware, insulation, calibration, or biosecurity practices.
-
----
-
-## 🧪 Testing
-
-| Goal | How |
-|------|-----|
-| Safe Mode | Disconnect both DS18B20 (or force invalid readings) → heaters OFF, LED on |
-| Emergency | Raise sensor reading ≥ 39.8 °C → Emergency; cool and wait ≥ ~10 s stable for auto-exit (or `EXITEMG`) |
-| Relay stuck | Simulate high temp with heater software OFF for > 30 s (not in Safe/Emergency) |
-| Predictive | Fail DS sensors while rates were previously learned → predictive log; low confidence → Safe (if not Emergency) |
-| FORECAST | Complete ≥ 3 full cycles (or inject archive data in lab) then `FORECAST` |
-| CLEARDIAG | `CLEARDIAG` then `CONFIRM` within 5 s; verify with `REPORT` |
-| Offline | Wrong WiFi credentials → control continues; backoff messages only |
-| Email | Keep disabled until intentional crash + SMTP test with WDT observed |
-
-Recommended: **24 h** soak with Serial logging and occasional `REPORT` / `HEALTH`.
-
----
+- Keep the control loop independent of Wi-Fi, Telegram, and Adafruit IO.
+- Never commit credentials; use `secrets.h.example` as the public template.
+- Treat the ESP32 GPIO outputs as low-voltage control signals only.
+- Validate temperature sensors and relay hardware independently of software.
+- Review all threshold changes on real hardware before incubation.
+- Do not interpret a high health score as a biological guarantee.
+- Back up and inspect NVS behaviour after firmware upgrades.
+- Keep network calls short, rate-limited, and outside safety decisions.
 
 ## 🤝 Contributing
 
-1. Fork / branch from the current v2.0 baseline.
-2. Do **not** change heater hysteresis or Emergency thresholds without documenting risk.
-3. Prefer static buffers; avoid `String` and heap allocation in `loop` / `diag_sample` / `controlHeater`.
-4. Keep actuator index map (0–3) aligned with diagnostics REPORT.
-5. Open a PR with: what changed, why, how you tested (Serial commands / hardware scenario).
+Please read [`CONTRIBUTING.md`](CONTRIBUTING.md). Safety-related changes should
+include the risk, test setup, observed behaviour, and rollback considerations.
+Keep pull requests focused and never include real credentials.
 
-Optional style notes: bilingual comments are acceptable; public APIs stay in English identifiers.
+## 📜 License
 
----
-
-
----
-
-
----
-
-
----
-
-## 📊 Operational Evidence
-
-Live Telegram diagnostics and Adafruit IO telemetry from extended test runs:
-
-- Telegram commands: `/diagnose`, `/faults`, `/actuators`, `/resetreason`, `/status`
-- Cloud feeds: `temperature-avg`, `health-score`, `duty-cycle`, `sensor-delta`, `overshoot-p95`
-- Sample exports and screenshots: [`docs/evidence/`](docs/evidence/)
-
-Temperature remained near incubation target (~37.2–37.9°C) during logged runs.
-
-## 📷 Prototype Photos
-
-Live hardware prototype (breadboard + cardboard test enclosure):
-
-| Photo | File |
-|-------|------|
-| Running system overview | [`docs/photos/01_prototype_overview_running.jpg`](docs/photos/01_prototype_overview_running.jpg) |
-| LCD + relays | [`docs/photos/02_lcd_relays_running.jpg`](docs/photos/02_lcd_relays_running.jpg) |
-| Live temp / humidity | [`docs/photos/03_lcd_humidity_control.jpg`](docs/photos/03_lcd_humidity_control.jpg) |
-| Full assembly | [`docs/photos/04_full_assembly_cardboard_enclosure.jpg`](docs/photos/04_full_assembly_cardboard_enclosure.jpg) |
-| ESP32 close-up | [`docs/photos/05_esp32_breadboard_closeup.jpg`](docs/photos/05_esp32_breadboard_closeup.jpg) |
-
-LCD captures during operation show average temperature near **37.4–37.9°C**, humidity, and heater/turner status. See [`docs/photos/README.md`](docs/photos/README.md).
-
-## 🖼️ Diagrams
-
-System and hardware documentation diagrams are in [`docs/diagrams/`](docs/diagrams/):
-
-| Diagram | File |
-|---------|------|
-| System block diagram | `01_system_block_diagram.svg` |
-| Circuit schematic | `02_circuit_schematic.svg` / `02b_circuit_schematic_v2.svg` |
-| Wiring (practical) | `03_wiring_diagram.svg` |
-| PCB layout guide | `04_pcb_layout_guide.svg` |
-| Enclosure concept | `05_enclosure_design.svg` |
-| Bill of materials | `06_bom.svg` |
-| Testing guide | `07_testing_guide.svg` |
-| Control flowchart | `08_control_flowchart.svg` |
-| Temperature profile | `09_temperature_profile.svg` |
-| Health score trend | `10_health_score_over_time.svg` |
-
-See [`docs/diagrams/README.md`](docs/diagrams/README.md) for notes. Always cross-check pin numbers and thresholds with the firmware source before building.
-
-## 📄 License
-
-This project is released under the **MIT License** (or the license file included in the repository, if different).  
-You may use, modify, and distribute with attribution. **No warranty** — use at your own risk for biological processes.
-
----
+Released under the [MIT License](LICENSE).
 
 ## 🙏 Acknowledgments
 
-- Espressif ESP32 Arduino core and WDT / NVS APIs  
-- Adafruit DHT library  
-- OneWire / DallasTemperature communities  
-- LiquidCrystal_I2C maintainers  
-- EMailSender (xreef) for optional SMTP  
-- Everyone iterating on reliability patterns (dual-blob, fault rings, offline-first IoT)
+Built with the ESP32 Arduino ecosystem and the Adafruit, OneWire,
+DallasTemperature, LiquidCrystal I2C, UniversalTelegramBot, and ArduinoJson
+libraries.
 
----
+## 🔗 Project links
 
-## 📬 Contact & Support
-
-- Open an **issue** on the project repository for bugs and feature requests.  
-- For private deployment questions, use the contact channel provided by the project maintainer.  
-- Security: report credential leaks or unsafe defaults privately when possible.
-
----
-
-**Keep the network optional. Keep the eggs safe.**
+- [Repository](https://github.com/MostafaFathi-afrotoh/-ESP32-Egg-Incubator)
+- [Issues and discussions](https://github.com/MostafaFathi-afrotoh/-ESP32-Egg-Incubator/issues)
+- [ESP32 by Espressif](https://www.espressif.com/)
+- [Arduino](https://www.arduino.cc/)
