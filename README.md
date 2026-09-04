@@ -175,7 +175,25 @@ flowchart TB
 - Confirm your LCD's I2C address — `0x27` is common, but some modules use `0x3F`.
 
 ---
+---
 
+## 📸 System Implementation & Monitoring
+
+### Complete Hardware, Control, and Remote Monitoring Overview
+
+The following figure presents the complete ESP32 Egg Incubator Controller implementation, including the physical control hardware, independent power distribution, common-ground architecture, sensors, relay-controlled actuators, local LCD interface, status/alarm indicators, cooling fan, and remote monitoring interfaces.
+
+<div align="center">
+
+<img src="docs/system-overview.png" alt="ESP32 Egg Incubator Controller - Complete System Implementation and Monitoring" width="100%">
+
+</div>
+
+**Figure — Complete system implementation and monitoring architecture.**
+
+The controller operates with separate power domains for the low-voltage control electronics and relay/actuator loads, while maintaining a common ground reference. Local control and safety functions remain operational independently of network connectivity, with Telegram and Adafruit IO providing remote monitoring and diagnostic visibility.
+
+---
 ## ⚙️ Firmware Algorithms
 
 ### 1. Hysteresis Temperature Control
