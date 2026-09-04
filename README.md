@@ -177,6 +177,8 @@ flowchart TB
 ---
 ---
 
+---
+
 ## 📸 System Implementation & Monitoring
 
 ### Complete Hardware, Control, and Remote Monitoring Overview
@@ -185,15 +187,15 @@ The following figure presents the complete ESP32 Egg Incubator Controller implem
 
 <div align="center">
 
-<img src="docs/system-overview.png" alt="ESP32 Egg Incubator Controller - Complete System Implementation and Monitoring" width="100%">
+<img src="docs/system-overview.png" alt="ESP32 Egg Incubator Controller - Complete System Implementation and Remote Monitoring" width="100%">
 
 </div>
 
-**Figure — Complete system implementation and monitoring architecture.**
+**Figure — Complete System Implementation and Remote Monitoring.**
 
 The controller operates with separate power domains for the low-voltage control electronics and relay/actuator loads, while maintaining a common ground reference. Local control and safety functions remain operational independently of network connectivity, with Telegram and Adafruit IO providing remote monitoring and diagnostic visibility.
 
----
+------
 ## ⚙️ Firmware Algorithms
 
 ### 1. Hysteresis Temperature Control
